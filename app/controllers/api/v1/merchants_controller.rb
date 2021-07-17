@@ -11,7 +11,7 @@ class Api::V1::MerchantsController < ApplicationController
       merchant = Merchant.find(params[:id])
       render json: MerchantsSerializer.format_merchant(merchant)
     else
-      render :json => { :response => 'Not Found' }, :status => 404
+      render json: { response: 'Not Found' }, status: :not_found
     end
   end
 end

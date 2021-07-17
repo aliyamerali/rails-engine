@@ -11,7 +11,7 @@ class Api::V1::ItemsController < ApplicationController
       item = Item.find(params[:id])
       render json: ItemsSerializer.format_item(item)
     else
-      render :json => { :response => 'Not Found' }, :status => 404
+      render json: { response: 'Not Found' }, status: :not_found
     end
   end
 end
