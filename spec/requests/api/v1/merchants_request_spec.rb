@@ -23,7 +23,7 @@ RSpec.describe 'Merchants API' do
       merchants = JSON.parse(response.body, symbolize_names: true)[:data]
 
       expect(merchants.count).to eq(50)
-      expect(merchants.first[:id].to_i).to eq(151)
+      expect(merchants.first[:id].to_i).to eq(Merchant.first.id + 50)
 
       get '/api/v1/merchants?per_page=50&page=3'
 
@@ -31,7 +31,7 @@ RSpec.describe 'Merchants API' do
       merchants = JSON.parse(response.body, symbolize_names: true)[:data]
 
       expect(merchants.count).to eq(50)
-      expect(merchants.first[:id].to_i).to eq(201)
+      expect(merchants.first[:id].to_i).to eq(Merchant.first.id + 100)
     end
 
     it 'defaults to page 1 if page given is less than or eq to 0' do

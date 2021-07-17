@@ -23,7 +23,7 @@ RSpec.describe 'Items API' do
       items = JSON.parse(response.body, symbolize_names: true)[:data]
 
       expect(items.count).to eq(50)
-      expect(items.first[:id].to_i).to eq(151)
+      expect(items.first[:id].to_i).to eq(Item.first.id + 50)
 
       get '/api/v1/items?per_page=50&page=3'
 
@@ -31,7 +31,7 @@ RSpec.describe 'Items API' do
       items = JSON.parse(response.body, symbolize_names: true)[:data]
 
       expect(items.count).to eq(50)
-      expect(items.first[:id].to_i).to eq(201)
+      expect(items.first[:id].to_i).to eq(Item.first.id + 100)
     end
 
     it 'defaults to page 1 if page given is less than or eq to 0' do
