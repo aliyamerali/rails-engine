@@ -12,6 +12,12 @@
         "lines": [
           1,
           1,
+          null,
+          1,
+          16,
+          16,
+          null,
+          null,
           null
         ]
       },
@@ -62,8 +68,77 @@
           1,
           null
         ]
+      },
+      "/Users/aliyamerali/Turing/3Mod/projects/rails-engine/app/controllers/api/v1/items_controller.rb": {
+        "lines": [
+          1,
+          null,
+          1,
+          5,
+          5,
+          5,
+          5,
+          null,
+          null
+        ]
+      },
+      "/Users/aliyamerali/Turing/3Mod/projects/rails-engine/app/controllers/application_controller.rb": {
+        "lines": [
+          1,
+          null
+        ]
+      },
+      "/Users/aliyamerali/Turing/3Mod/projects/rails-engine/app/serializers/items_serializer.rb": {
+        "lines": [
+          1,
+          1,
+          5,
+          140,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "/Users/aliyamerali/Turing/3Mod/projects/rails-engine/app/controllers/api/v1/merchants_controller.rb": {
+        "lines": [
+          1,
+          null,
+          1,
+          5,
+          5,
+          5,
+          5,
+          null,
+          null
+        ]
+      },
+      "/Users/aliyamerali/Turing/3Mod/projects/rails-engine/app/serializers/merchants_serializer.rb": {
+        "lines": [
+          1,
+          1,
+          5,
+          140,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
       }
     },
-    "timestamp": 1626484408
+    "timestamp": 1626526546
   }
 }
