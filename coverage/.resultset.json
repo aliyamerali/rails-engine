@@ -72,7 +72,6 @@
       "/Users/aliyamerali/Turing/3Mod/projects/rails-engine/app/controllers/api/v1/items_controller.rb": {
         "lines": [
           1,
-          null,
           1,
           5,
           5,
@@ -102,16 +101,12 @@
           null,
           null,
           null,
-          null,
-          null,
-          null,
           null
         ]
       },
       "/Users/aliyamerali/Turing/3Mod/projects/rails-engine/app/controllers/api/v1/merchants_controller.rb": {
         "lines": [
           1,
-          null,
           1,
           5,
           5,
@@ -125,10 +120,9 @@
         "lines": [
           1,
           1,
+          null,
           5,
           140,
-          null,
-          null,
           null,
           null,
           null,
@@ -139,6 +133,6 @@
         ]
       }
     },
-    "timestamp": 1626526546
+    "timestamp": 1626529347
   }
 }

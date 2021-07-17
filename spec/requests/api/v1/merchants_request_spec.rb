@@ -56,4 +56,24 @@ RSpec.describe 'Merchants API' do
       expect(merchants).to eq([])
     end
   end
+
+  describe 'show - fetch a single record' do
+    it 'returns the record requested if it exists' do
+      create(:merchant)
+      merchant = Merchant.first
+
+      get "/api/v1/merchants/#{merchant.id}"
+      output = JSON.parse(response.body, symbolize_names: true)[:data]
+
+
+      expect(response).to be_successful
+      expect(output.first[:id]).to eq(merchant.id)
+    end
+
+    it 'returns 404 if no record exists' do
+      get '/api/v1/merchants/12'
+
+      expect(response).to eq(404)
+    end
+  end
 end
