@@ -1,8 +1,5 @@
 require 'rails_helper'
 
-# TODO:
-# ADD TEST FOR SAD PATH - NO DATA
-
 RSpec.describe 'Merchants API' do
   describe 'index' do
     it 'returns a list of all merchants with a default of 20 max and page 1' do
@@ -59,5 +56,4 @@ RSpec.describe 'Merchants API' do
       expect(merchants).to eq([])
     end
   end
-
 end
