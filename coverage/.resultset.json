@@ -62,8 +62,24 @@
           1,
           null
         ]
+      },
+      "/Users/aliyamerali/Turing/3Mod/projects/rails-engine/app/controllers/api/v1/merchants_controller.rb": {
+        "lines": [
+          1,
+          null,
+          1,
+          1,
+          null,
+          null
+        ]
+      },
+      "/Users/aliyamerali/Turing/3Mod/projects/rails-engine/app/controllers/application_controller.rb": {
+        "lines": [
+          1,
+          null
+        ]
       }
     },
-    "timestamp": 1626485011
+    "timestamp": 1626485660
   }
 }
