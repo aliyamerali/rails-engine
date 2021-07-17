@@ -48,6 +48,15 @@ RSpec.describe 'Merchants API' do
       expect(merchants.count).to eq(20)
       expect(merchants.first[:id].to_i).to eq(Merchant.first.id)
     end
+
+    it 'returns an empty array of data for 0 results' do
+      get '/api/v1/merchants'
+
+      expect(response).to be_successful
+      merchants = JSON.parse(response.body, symbolize_names: true)[:data]
+
+      expect(merchants.count).to eq(0)
+    end
   end
 
 end
