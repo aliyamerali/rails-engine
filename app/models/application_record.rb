@@ -4,6 +4,6 @@ class ApplicationRecord < ActiveRecord::Base
   def self.paginate(per_page, page)
     page = 1 if page <= 0
     limit(per_page)
-    .offset(per_page * (page-1))
+      .offset(per_page * (page - 1))
   end
 end
