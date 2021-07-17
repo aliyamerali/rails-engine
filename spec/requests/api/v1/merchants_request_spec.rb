@@ -15,7 +15,7 @@ RSpec.describe 'Merchants API' do
     end
 
     it 'takes query params for per page and page, returing accurate data' do
-      create_list(:merchant, 100)
+      create_list(:merchant, 200)
 
       get '/api/v1/merchants?per_page=50&page=2'
 
@@ -24,6 +24,14 @@ RSpec.describe 'Merchants API' do
 
       expect(merchants.count).to eq(50)
       expect(merchants.first[:id]).to eq(151)
+
+      get '/api/v1/merchants?per_page=50&page=3'
+
+      expect(response).to be_successful
+      merchants = JSON.parse(response.body, symbolize_names: true)
+
+      expect(merchants.count).to eq(50)
+      expect(merchants.first[:id]).to eq(201)
     end
   end
 end
