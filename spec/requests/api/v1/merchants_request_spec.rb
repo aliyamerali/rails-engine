@@ -1,9 +1,7 @@
 require 'rails_helper'
 
 # TODO:
-# SERIALIZE RETURN TO HAVE DATA SECTION
 # ADD TEST FOR SAD PATH - NO DATA
-
 
 RSpec.describe 'Merchants API' do
   describe 'index' do
@@ -13,8 +11,8 @@ RSpec.describe 'Merchants API' do
       get '/api/v1/merchants'
 
       expect(response).to be_successful
-      merchants = JSON.parse(response.body, symbolize_names: true)
-      # binding.pry
+      merchants = JSON.parse(response.body, symbolize_names: true)[:data]
+
       expect(merchants.count).to eq(20)
       expect(merchants.first[:id]).to eq(Merchant.first.id)
     end
@@ -25,7 +23,7 @@ RSpec.describe 'Merchants API' do
       get '/api/v1/merchants?per_page=50&page=2'
 
       expect(response).to be_successful
-      merchants = JSON.parse(response.body, symbolize_names: true)
+      merchants = JSON.parse(response.body, symbolize_names: true)[:data]
 
       expect(merchants.count).to eq(50)
       expect(merchants.first[:id]).to eq(151)
@@ -33,10 +31,22 @@ RSpec.describe 'Merchants API' do
       get '/api/v1/merchants?per_page=50&page=3'
 
       expect(response).to be_successful
-      merchants = JSON.parse(response.body, symbolize_names: true)
+      merchants = JSON.parse(response.body, symbolize_names: true)[:data]
 
       expect(merchants.count).to eq(50)
       expect(merchants.first[:id]).to eq(201)
+    end
+
+    it 'defaults to page 1 if page given is less than or eq to 0' do
+      create_list(:merchant, 30)
+
+      get '/api/v1/merchants?page=0'
+
+      expect(response).to be_successful
+      merchants = JSON.parse(response.body, symbolize_names: true)[:data]
+
+      expect(merchants.count).to eq(20)
+      expect(merchants.first[:id]).to eq(Merchant.first.id)
     end
   end
 

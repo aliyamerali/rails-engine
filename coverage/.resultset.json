@@ -55,7 +55,8 @@
           1,
           null,
           1,
-          5,
+          7,
+          7,
           null,
           null,
           null
@@ -73,10 +74,10 @@
           1,
           null,
           1,
-          2,
-          2,
-          2,
-          2,
+          4,
+          4,
+          4,
+          4,
           null,
           null
         ]
@@ -86,8 +87,25 @@
           1,
           null
         ]
+      },
+      "/Users/aliyamerali/Turing/3Mod/projects/rails-engine/app/serializers/merchants_serializer.rb": {
+        "lines": [
+          1,
+          1,
+          4,
+          140,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
       }
     },
-    "timestamp": 1626488497
+    "timestamp": 1626524743
   }
 }
