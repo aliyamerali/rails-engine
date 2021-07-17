@@ -14,4 +14,19 @@ class Api::V1::ItemsController < ApplicationController
       render json: { response: 'Not Found' }, status: :not_found
     end
   end
+
+  def create
+    item = Item.new(item_params)
+    if item.save
+      render json: ItemsSerializer.format_item(item)
+    else
+      render json: { response: 'Bad Request' }, status: 400
+    end
+  end
+
+  private
+
+  def item_params
+    params.require(:item).permit(:name, :description, :unit_price, :merchant_id)
+  end
 end

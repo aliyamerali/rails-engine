@@ -130,18 +130,19 @@ RSpec.describe 'Items API' do
 
       post '/api/v1/items', headers: headers, params: JSON.generate(item: item_params)
       created_item = Item.last
+      output = JSON.parse(response.body, symbolize_names: true)[:data]
 
       expect(response).to be_successful
-      expect(response.body[:data][:name]).to eq(item_params[:name])
+      expect(output[:attributes][:name]).to eq(item_params[:name])
       expect(created_item.name).to eq(item_params[:name])
 
-      expect(response.body[:data][:description]).to eq(item_params[:description])
+      expect(output[:attributes][:description]).to eq(item_params[:description])
       expect(created_item.description).to eq(item_params[:description])
 
-      expect(response.body[:data][:unit_price]).to eq(item_params[:unit_price])
+      expect(output[:attributes][:unit_price]).to eq(item_params[:unit_price])
       expect(created_item.unit_price).to eq(item_params[:unit_price])
 
-      expect(response.body[:data][:merchant_id]).to eq(item_params[:merchant_id])
+      expect(output[:attributes][:merchant_id]).to eq(item_params[:merchant_id])
       expect(created_item.merchant_id).to eq(item_params[:merchant_id])
     end
 
@@ -157,19 +158,5 @@ RSpec.describe 'Items API' do
       post '/api/v1/items', headers: headers, params: JSON.generate(item: item_params)
       expect(response.status).to eq(400)
     end
-
-    # Sample return
-    #     {
-    #   "data": {
-    #     "id": "16",
-    #     "type": "item",
-    #     "attributes": {
-    #       "name": "Widget",
-    #       "description": "High quality widget",
-    #       "unit_price": 100.99,
-    #       "merchant_id": 14
-    #     }
-    #   }
-    # }
   end
 end
