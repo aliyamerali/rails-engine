@@ -7,7 +7,11 @@ class Api::V1::MerchantsController < ApplicationController
   end
 
   def show
-    merchant = Merchant.find(params[:id])
-    render json: MerchantsSerializer.format_merchant(merchant)
+    if Merchant.exists?(params[:id])
+      merchant = Merchant.find(params[:id])
+      render json: MerchantsSerializer.format_merchant(merchant)
+    else
+      render :json => { :response => 'Not Found' }, :status => 404
+    end
   end
 end

@@ -97,7 +97,7 @@ RSpec.describe 'Merchants API' do
     it 'returns 404 if no record exists' do
       get '/api/v1/merchants/12'
 
-      expect(response).to eq(404)
+      expect(response.status).to eq(404)
     end
   end
 end
