@@ -49,7 +49,7 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def valid_merchant?
-    if item_params["merchant_id"] && !Merchant.exists?(item_params["merchant_id"].to_i)
+    if item_params['merchant_id'] && !Merchant.exists?(item_params['merchant_id'].to_i)
       false
     else
       true
