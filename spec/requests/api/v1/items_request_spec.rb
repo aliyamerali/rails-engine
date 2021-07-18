@@ -38,7 +38,7 @@ RSpec.describe 'Items API' do
       expect(items.count).to eq(50)
 
       expect(items.first).to have_key(:id)
-      expect(items.first[:id].to_i).to eq(Item.first.id + 50)
+      expect(items.first[:id].to_i).to_not eq(Item.first.id)
 
       expect(items.first[:attributes]).to have_key(:name)
       expect(items.first[:attributes][:name]).to be_a(String)
@@ -82,6 +82,17 @@ RSpec.describe 'Items API' do
       expect(items.count).to eq(0)
       expect(items).to eq([])
     end
+
+    it 'returns all items if per_page is really big' do
+      create_list(:item, 2483)
+
+      get '/api/v1/items?per_page=25000'
+
+      expect(response).to be_successful
+      items = JSON.parse(response.body, symbolize_names: true)[:data]
+
+      expect(items.count).to eq(2483)
+    end
   end
 
   describe 'show - fetch a single record' do
@@ -115,5 +126,70 @@ RSpec.describe 'Items API' do
 
       expect(response.status).to eq(404)
     end
+  end
+
+  describe 'create a new item' do
+    it 'creates a new item and renders a json record of the new item when all attributes present' do
+      merchant = create(:merchant)
+      item_params = ({
+                "name": "value1",
+                "description": "value2",
+                "unit_price": 100.99,
+                "merchant_id": merchant.id.to_i
+              })
+      headers = {"CONTENT_TYPE" => "application/json"}
+
+      post '/api/v1/items', headers: headers, params: JSON.generate(item: item_params)
+      created_item = Item.last
+      output = JSON.parse(response.body, symbolize_names: true)[:data]
+
+      expect(response).to be_successful
+      expect(output[:attributes][:name]).to eq(item_params[:name])
+      expect(created_item.name).to eq(item_params[:name])
+
+      expect(output[:attributes][:description]).to eq(item_params[:description])
+      expect(created_item.description).to eq(item_params[:description])
+
+      expect(output[:attributes][:unit_price]).to eq(item_params[:unit_price])
+      expect(created_item.unit_price).to eq(item_params[:unit_price])
+
+      expect(output[:attributes][:merchant_id]).to eq(item_params[:merchant_id])
+      expect(created_item.merchant_id).to eq(item_params[:merchant_id])
+    end
+
+    it 'returns an error if any attributes are missing' do
+      merchant = create(:merchant)
+      item_params = ({
+                "name": "value1",
+                "description": "value2",
+                "merchant_id": merchant.id.to_i
+              })
+      headers = {"CONTENT_TYPE" => "application/json"}
+
+      post '/api/v1/items', headers: headers, params: JSON.generate(item: item_params)
+      expect(response.status).to eq(400)
+    end
+  end
+
+  describe 'destroy an item' do
+    it 'destroys an item when it exists' do
+      item = create(:item)
+
+      expect(Item.count).to eq(1)
+
+      delete "/api/v1/items/#{item.id}"
+
+      expect(response).to be_successful
+      expect(Item.count).to eq(0)
+      expect{Item.find(item.id)}.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it 'returns an error if the item does not exist' do
+      delete '/api/v1/items/500'
+
+      expect(response.status).to eq(404)
+    end
+
+    #TODO: Test for destroy any invoice if this was the only item on an invoice
   end
 end

@@ -30,7 +30,7 @@ RSpec.describe 'Merchants API' do
       expect(merchants.count).to eq(50)
 
       expect(merchants.first).to have_key(:id)
-      expect(merchants.first[:id].to_i).to eq(Merchant.first.id + 50)
+      expect(merchants.first[:id].to_i).to_not eq(Merchant.first.id)
 
       expect(merchants.first[:attributes]).to have_key(:name)
       expect(merchants.first[:attributes][:name]).to be_a(String)
