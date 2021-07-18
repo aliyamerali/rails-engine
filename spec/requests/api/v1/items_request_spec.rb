@@ -32,33 +32,33 @@ RSpec.describe 'Items API' do
       create_list(:item, 200)
 
       get '/api/v1/items?per_page=50&page=2'
-      items = JSON.parse(response.body, symbolize_names: true)[:data]
+      items_pg2 = JSON.parse(response.body, symbolize_names: true)[:data]
 
       expect(response).to be_successful
-      expect(items.count).to eq(50)
+      expect(items_pg2.count).to eq(50)
 
-      expect(items.first).to have_key(:id)
-      expect(items.first[:id].to_i).to_not eq(Item.first.id)
+      expect(items_pg2.first).to have_key(:id)
+      expect(items_pg2.first[:id].to_i).to_not eq(Item.first.id)
 
-      expect(items.first[:attributes]).to have_key(:name)
-      expect(items.first[:attributes][:name]).to be_a(String)
+      expect(items_pg2.first[:attributes]).to have_key(:name)
+      expect(items_pg2.first[:attributes][:name]).to be_a(String)
 
-      expect(items.first[:attributes]).to have_key(:description)
-      expect(items.first[:attributes][:description]).to be_a(String)
+      expect(items_pg2.first[:attributes]).to have_key(:description)
+      expect(items_pg2.first[:attributes][:description]).to be_a(String)
 
-      expect(items.first[:attributes]).to have_key(:unit_price)
-      expect(items.first[:attributes][:unit_price]).to be_a(Float)
+      expect(items_pg2.first[:attributes]).to have_key(:unit_price)
+      expect(items_pg2.first[:attributes][:unit_price]).to be_a(Float)
 
-      expect(items.first[:attributes]).to have_key(:merchant_id)
-      expect(items.first[:attributes][:merchant_id]).to be_a(Integer)
+      expect(items_pg2.first[:attributes]).to have_key(:merchant_id)
+      expect(items_pg2.first[:attributes][:merchant_id]).to be_a(Integer)
 
       get '/api/v1/items?per_page=50&page=3'
 
       expect(response).to be_successful
-      items = JSON.parse(response.body, symbolize_names: true)[:data]
+      items_pg3 = JSON.parse(response.body, symbolize_names: true)[:data]
 
-      expect(items.count).to eq(50)
-      expect(items.first[:id].to_i).to eq(Item.first.id + 100)
+      expect(items_pg3.count).to eq(50)
+      expect(items_pg3.first[:id].to_i).to_not eq(items_pg2.first[:id].to_i)
     end
 
     it 'defaults to page 1 if page given is less than or eq to 0' do
@@ -84,14 +84,14 @@ RSpec.describe 'Items API' do
     end
 
     it 'returns all items if per_page is really big' do
-      create_list(:item, 2483)
+      create_list(:item, 243)
 
       get '/api/v1/items?per_page=25000'
 
       expect(response).to be_successful
       items = JSON.parse(response.body, symbolize_names: true)[:data]
 
-      expect(items.count).to eq(2483)
+      expect(items.count).to eq(243)
     end
   end
 
@@ -168,6 +168,48 @@ RSpec.describe 'Items API' do
 
       post '/api/v1/items', headers: headers, params: JSON.generate(item: item_params)
       expect(response.status).to eq(400)
+    end
+  end
+
+  describe 'update an item' do
+    it 'updates an item if in record' do
+      item = create(:item)
+      previous_name = item.name
+      item_params = ({
+                "name": "value1"
+              })
+      headers = {"CONTENT_TYPE" => "application/json"}
+
+      patch "/api/v1/items/#{item.id}", headers: headers, params: JSON.generate({item: item_params})
+
+      post_item = Item.find(item.id)
+
+      expect(response).to be_successful
+      expect(post_item.name).to_not eq(previous_name)
+      expect(post_item.name).to eq("value1")
+    end
+
+    it 'returns 404 if merchant id invalid' do
+      item_params = ({
+                "name": "value1",
+                "merchant_id": 1345
+              })
+      headers = {"CONTENT_TYPE" => "application/json"}
+
+      patch "/api/v1/items/143254", headers: headers, params: JSON.generate({item: item_params})
+
+      expect(response.status).to eq(404)
+    end
+
+    it 'returns not found if item doesn\'t already exist' do
+      item_params = ({
+                "name": "value1"
+              })
+      headers = {"CONTENT_TYPE" => "application/json"}
+
+      patch "/api/v1/items/143254", headers: headers, params: JSON.generate({item: item_params})
+
+      expect(response.status).to eq(404)
     end
   end
 
