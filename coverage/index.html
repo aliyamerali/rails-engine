@@ -14,7 +14,7 @@
       <img src="./assets/0.12.3/loading.gif" alt="loading"/>
     </div>
     <div id="wrapper" class="hide">
-      <div class="timestamp">Generated <abbr class="timeago" title="2021-07-18T09:10:33-06:00">2021-07-18T09:10:33-06:00</abbr></div>
+      <div class="timestamp">Generated <abbr class="timeago" title="2021-07-18T09:22:33-06:00">2021-07-18T09:22:33-06:00</abbr></div>
       <ul class="group_tabs"></ul>
 
       <div id="content">
@@ -30,7 +30,7 @@
      covered at
      <span class="covered_strength">
        <span class="green">
-         8.34
+         8.17
        </span>
     </span> hits/line
     )
@@ -43,8 +43,8 @@
   </div>
 
   <div class="t-line-summary">
-    <b>92</b> relevant lines,
-    <span class="green"><b>92</b> lines covered</span> and
+    <b>95</b> relevant lines,
+    <span class="green"><b>95</b> lines covered</span> and
     <span class="red"><b>0</b> lines missed. </span>
     (<span class="green">
   100.0%
@@ -84,11 +84,11 @@
           <tr class="t-file">
             <td class="strong t-file__name"><a href="#618c040362abf83e6c45c430e5f3e47a6e8bd711" class="src_link" title="app/controllers/api/v1/merchants_controller.rb">app/controllers/api/v1/merchants_controller.rb</a></td>
             <td class="green strong cell--number t-file__coverage">100.00 %</td>
-            <td class="cell--number">17</td>
-            <td class="cell--number">11</td>
-            <td class="cell--number">11</td>
+            <td class="cell--number">20</td>
+            <td class="cell--number">14</td>
+            <td class="cell--number">14</td>
             <td class="cell--number">0</td>
-            <td class="cell--number">2.55</td>
+            <td class="cell--number">2.57</td>
             
           </tr>
         
@@ -198,7 +198,7 @@
             <td class="cell--number">6</td>
             <td class="cell--number">6</td>
             <td class="cell--number">0</td>
-            <td class="cell--number">24.83</td>
+            <td class="cell--number">25.00</td>
             
           </tr>
         
@@ -1045,8 +1045,8 @@
     
 
     <div class="t-line-summary">
-      <b>11</b> relevant lines.
-      <span class="green"><b>11</b> lines covered</span> and
+      <b>14</b> relevant lines.
+      <span class="green"><b>14</b> lines covered</span> and
       <span class="red"><b>0</b> lines missed.</span>
     </div>
 
@@ -1157,13 +1157,13 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="2" data-linenumber="10">
-            <span class="hits">2</span>
+          <li class="covered" data-hits="4" data-linenumber="10">
+            <span class="hits">4</span>
             
 
             
 
-            <code class="ruby">    if Merchant.exists?(params[:id])</code>
+            <code class="ruby">    if params[:item_id] &amp;&amp; Item.exists?(params[:item_id])</code>
           </li>
         </div>
       
@@ -1174,7 +1174,7 @@
 
             
 
-            <code class="ruby">      merchant = Merchant.find(params[:id])</code>
+            <code class="ruby">      merchant = Item.find(params[:item_id]).merchant</code>
           </li>
         </div>
       
@@ -1190,13 +1190,13 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="13">
-            
-            
-
+          <li class="covered" data-hits="3" data-linenumber="13">
+            <span class="hits">3</span>
             
 
-            <code class="ruby">    else</code>
+            
+
+            <code class="ruby">    elsif params[:id] &amp;&amp; Merchant.exists?(params[:id])</code>
           </li>
         </div>
       
@@ -1207,18 +1207,18 @@
 
             
 
-            <code class="ruby">      render json: { response: &#39;Not Found&#39; }, status: :not_found</code>
+            <code class="ruby">      merchant = Merchant.find(params[:id])</code>
           </li>
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="15">
-            
-            
-
+          <li class="covered" data-hits="1" data-linenumber="15">
+            <span class="hits">1</span>
             
 
-            <code class="ruby">    end</code>
+            
+
+            <code class="ruby">      render json: MerchantsSerializer.format_merchant(merchant)</code>
           </li>
         </div>
       
@@ -1229,12 +1229,45 @@
 
             
 
+            <code class="ruby">    else</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="2" data-linenumber="17">
+            <span class="hits">2</span>
+            
+
+            
+
+            <code class="ruby">      render json: { response: &#39;Not Found&#39; }, status: :not_found</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="18">
+            
+            
+
+            
+
+            <code class="ruby">    end</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="19">
+            
+            
+
+            
+
             <code class="ruby">  end</code>
           </li>
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="17">
+          <li class="never" data-hits="" data-linenumber="20">
             
             
 
@@ -2424,8 +2457,8 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="1" data-linenumber="14">
-            <span class="hits">1</span>
+          <li class="covered" data-hits="2" data-linenumber="14">
+            <span class="hits">2</span>
             
 
             

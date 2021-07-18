@@ -7,7 +7,10 @@ class Api::V1::MerchantsController < ApplicationController
   end
 
   def show
-    if Merchant.exists?(params[:id])
+    if params[:item_id] && Item.exists?(params[:item_id])
+      merchant = Item.find(params[:item_id]).merchant
+      render json: MerchantsSerializer.format_merchant(merchant)
+    elsif params[:id] && Merchant.exists?(params[:id])
       merchant = Merchant.find(params[:id])
       render json: MerchantsSerializer.format_merchant(merchant)
     else
