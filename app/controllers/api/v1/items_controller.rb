@@ -1,8 +1,12 @@
 class Api::V1::ItemsController < ApplicationController
   def index
-    page = params[:page].try(:to_i) || 1
-    per_page = params[:per_page].try(:to_i) || 20
-    items = Item.all.paginate(per_page, page)
+    if params[:merchant_id]
+      items = Item.where(merchant_id: params[:merchant_id])
+    else
+      page = params[:page].try(:to_i) || 1
+      per_page = params[:per_page].try(:to_i) || 20
+      items = Item.all.paginate(per_page, page)
+    end
     render json: ItemsSerializer.format_items(items)
   end
 

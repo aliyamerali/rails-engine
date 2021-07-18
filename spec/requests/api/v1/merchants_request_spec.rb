@@ -100,4 +100,34 @@ RSpec.describe 'Merchants API' do
       expect(response.status).to eq(404)
     end
   end
+
+  describe 'returns the items associated with the merchant' do
+    it 'returns merchant\'s items if merchant is found' do
+      create(:merchant)
+      merchant = Merchant.first
+      create_list(:item, 50, merchant_id: merchant.id)
+
+      get "/api/v1/merchants/#{merchant.id}/items"
+
+      expect(response).to be_successful
+      items = JSON.parse(response.body, symbolize_names: true)[:data]
+
+      expect(items.length).to eq(50)
+      expect(items.first).to have_key(:id)
+
+      expect(items.first[:attributes]).to have_key(:name)
+      expect(items.first[:attributes][:name]).to be_a(String)
+
+      expect(items.first[:attributes]).to have_key(:description)
+      expect(items.first[:attributes][:description]).to be_a(String)
+
+      expect(items.first[:attributes]).to have_key(:unit_price)
+      expect(items.first[:attributes][:unit_price]).to be_a(Float)
+
+      expect(items.first[:attributes]).to have_key(:merchant_id)
+      expect(items.first[:attributes][:merchant_id]).to eq(merchant.id)
+    end
+
+    it 'returns a 404 if merchant not found'
+  end
 end
