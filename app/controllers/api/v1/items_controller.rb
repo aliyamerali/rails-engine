@@ -1,10 +1,7 @@
 class Api::V1::ItemsController < ApplicationController
   def index
-    if params[:merchant_id] && Merchant.exists?(params[:merchant_id])
-      items = Item.where(merchant_id: params[:merchant_id])
-      render json: ItemsSerializer.format_items(items)
-    elsif params[:merchant_id] && !Merchant.exists?(params[:merchant_id])
-      render json: { response: 'Not Found' }, status: :not_found
+    if params[:merchant_id]
+      merchants_items(params[:merchant_id])
     else
       page = params[:page].try(:to_i) || 1
       per_page = params[:per_page].try(:to_i) || 20
@@ -60,6 +57,15 @@ class Api::V1::ItemsController < ApplicationController
       false
     else
       true
+    end
+  end
+
+  def merchants_items(merchant_id)
+    if Merchant.exists?(merchant_id)
+      items = Item.where(merchant_id: merchant_id)
+      render json: ItemsSerializer.format_items(items)
+    else
+      render json: { response: 'Not Found' }, status: :not_found
     end
   end
 end

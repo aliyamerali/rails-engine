@@ -1,9 +1,8 @@
 {
   "RSpec": {
     "coverage": {
-      "/Users/aliyamerali/Turing/3Mod/projects/rails-engine/app/models/merchant.rb": {
+      "/Users/aliyamerali/Turing/3Mod/projects/rails-engine/app/models/customer.rb": {
         "lines": [
-          1,
           1,
           1,
           null
@@ -15,10 +14,30 @@
           1,
           null,
           1,
-          0,
-          0,
+          17,
+          17,
           null,
           null,
+          null
+        ]
+      },
+      "/Users/aliyamerali/Turing/3Mod/projects/rails-engine/app/models/invoice_item.rb": {
+        "lines": [
+          1,
+          1,
+          1,
+          null
+        ]
+      },
+      "/Users/aliyamerali/Turing/3Mod/projects/rails-engine/app/models/invoice.rb": {
+        "lines": [
+          1,
+          1,
+          1,
+          1,
+          null,
+          1,
+          1,
           null
         ]
       },
@@ -35,70 +54,91 @@
           null
         ]
       },
+      "/Users/aliyamerali/Turing/3Mod/projects/rails-engine/app/models/merchant.rb": {
+        "lines": [
+          1,
+          1,
+          1,
+          null
+        ]
+      },
+      "/Users/aliyamerali/Turing/3Mod/projects/rails-engine/app/models/transaction.rb": {
+        "lines": [
+          1,
+          1,
+          null
+        ]
+      },
       "/Users/aliyamerali/Turing/3Mod/projects/rails-engine/app/controllers/api/v1/items_controller.rb": {
         "lines": [
           1,
           1,
+          8,
+          2,
+          null,
+          6,
+          6,
+          6,
+          6,
+          null,
+          null,
+          null,
+          1,
           2,
           1,
           1,
-          1,
-          1,
           null,
-          0,
-          0,
-          0,
-          0,
+          1,
           null,
           null,
           null,
           1,
-          0,
-          0,
-          0,
+          2,
+          2,
+          1,
           null,
-          0,
+          1,
           null,
           null,
           null,
           1,
-          0,
-          0,
-          0,
+          3,
+          1,
+          1,
           null,
-          0,
+          2,
           null,
           null,
           null,
           1,
-          0,
-          0,
-          0,
-          null,
-          0,
-          null,
-          null,
+          2,
+          1,
+          1,
           null,
           1,
-          0,
-          0,
-          0,
-          null,
-          0,
           null,
           null,
           null,
           1,
           null,
           1,
-          0,
+          7,
           null,
           null,
           1,
-          0,
-          0,
+          2,
+          1,
           null,
-          0,
+          1,
+          null,
+          null,
+          null,
+          1,
+          2,
+          1,
+          1,
+          null,
+          1,
           null,
           null,
           null
@@ -114,8 +154,8 @@
         "lines": [
           1,
           1,
-          1,
-          50,
+          7,
+          433,
           null,
           null,
           null,
@@ -126,7 +166,7 @@
           null,
           null,
           1,
-          0,
+          3,
           null,
           null,
           null,
@@ -137,8 +177,53 @@
           null,
           null
         ]
+      },
+      "/Users/aliyamerali/Turing/3Mod/projects/rails-engine/app/controllers/api/v1/merchants_controller.rb": {
+        "lines": [
+          1,
+          1,
+          5,
+          5,
+          5,
+          5,
+          null,
+          null,
+          1,
+          2,
+          1,
+          1,
+          null,
+          1,
+          null,
+          null,
+          null
+        ]
+      },
+      "/Users/aliyamerali/Turing/3Mod/projects/rails-engine/app/serializers/merchants_serializer.rb": {
+        "lines": [
+          1,
+          1,
+          null,
+          5,
+          140,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          1,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
       }
     },
-    "timestamp": 1626620789
+    "timestamp": 1626621033
   }
 }
