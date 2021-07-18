@@ -159,4 +159,26 @@ RSpec.describe 'Items API' do
       expect(response.status).to eq(400)
     end
   end
+
+  describe 'destroy an item' do
+    it 'destroys an item when it exists' do
+      item = create(:item)
+
+      expect(Item.count).to eq(1)
+
+      delete "/api/v1/items/#{item.id}"
+
+      expect(response).to be_successful
+      expect(Item.count).to eq(0)
+      expect{Item.find(item.id)}.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it 'returns an error if the item does not exist' do
+      delete '/api/v1/items/500'
+
+      expect(response.status).to eq(404)
+    end
+
+    #TODO: Test for destroy any invoice if this was the only item on an invoice
+  end
 end

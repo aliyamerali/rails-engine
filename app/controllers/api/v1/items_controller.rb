@@ -24,6 +24,16 @@ class Api::V1::ItemsController < ApplicationController
     end
   end
 
+  def destroy
+    if Item.exists?(params[:id])
+      item = Item.delete(params[:id])
+      render json: { response: 'No Content' }, status: 204
+    else
+      render json: { response: 'Not Found' }, status: :not_found
+    end
+
+  end
+
   private
 
   def item_params
