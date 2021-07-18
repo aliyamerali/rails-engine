@@ -237,4 +237,21 @@ RSpec.describe 'Items API' do
 
     #TODO: Test for destroy any invoice if this was the only item on an invoice
   end
+
+  describe 'item\'s merchant lookup' do
+    it 'returns the merchant associated with an item' do
+      create(:merchant)
+      merchant = Merchant.last
+      create(:item, merchant_id: merchant.id)
+      item = Item.last
+
+      get "/api/v1/items/#{item.id}/merchant"
+
+    end
+    it 'returns a 404 if the item does not exist' do
+      get "/api/v1/items/456788/merchant"
+
+      expect(response.status).to eq(404)
+    end
+  end
 end
