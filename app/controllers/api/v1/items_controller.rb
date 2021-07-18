@@ -18,16 +18,16 @@ class Api::V1::ItemsController < ApplicationController
   def create
     item = Item.new(item_params)
     if item.save
-      render json: ItemsSerializer.format_item(item)
+      render json: ItemsSerializer.format_item(item), status: :created
     else
-      render json: { response: 'Bad Request' }, status: 400
+      render json: { response: 'Bad Request' }, status: :bad_request
     end
   end
 
   def destroy
     if Item.exists?(params[:id])
-      item = Item.delete(params[:id])
-      render json: { response: 'No Content' }, status: 204
+      Item.delete(params[:id])
+      render json: { response: 'No Content' }, status: :no_content
     else
       render json: { response: 'Not Found' }, status: :not_found
     end

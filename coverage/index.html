@@ -14,7 +14,7 @@
       <img src="./assets/0.12.3/loading.gif" alt="loading"/>
     </div>
     <div id="wrapper" class="hide">
-      <div class="timestamp">Generated <abbr class="timeago" title="2021-07-18T07:33:29-06:00">2021-07-18T07:33:29-06:00</abbr></div>
+      <div class="timestamp">Generated <abbr class="timeago" title="2021-07-18T07:53:04-06:00">2021-07-18T07:53:04-06:00</abbr></div>
       <ul class="group_tabs"></ul>
 
       <div id="content">
@@ -30,7 +30,7 @@
      covered at
      <span class="covered_strength">
        <span class="green">
-         5.67
+         38.43
        </span>
     </span> hits/line
     )
@@ -77,7 +77,7 @@
             <td class="cell--number">24</td>
             <td class="cell--number">24</td>
             <td class="cell--number">0</td>
-            <td class="cell--number">1.88</td>
+            <td class="cell--number">2.04</td>
             
           </tr>
         
@@ -110,7 +110,7 @@
             <td class="cell--number">5</td>
             <td class="cell--number">5</td>
             <td class="cell--number">0</td>
-            <td class="cell--number">7.00</td>
+            <td class="cell--number">7.40</td>
             
           </tr>
         
@@ -187,7 +187,7 @@
             <td class="cell--number">6</td>
             <td class="cell--number">6</td>
             <td class="cell--number">0</td>
-            <td class="cell--number">25.00</td>
+            <td class="cell--number">439.00</td>
             
           </tr>
         
@@ -268,8 +268,8 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="5" data-linenumber="3">
-            <span class="hits">5</span>
+          <li class="covered" data-hits="6" data-linenumber="3">
+            <span class="hits">6</span>
             
 
             
@@ -279,8 +279,8 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="5" data-linenumber="4">
-            <span class="hits">5</span>
+          <li class="covered" data-hits="6" data-linenumber="4">
+            <span class="hits">6</span>
             
 
             
@@ -290,8 +290,8 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="5" data-linenumber="5">
-            <span class="hits">5</span>
+          <li class="covered" data-hits="6" data-linenumber="5">
+            <span class="hits">6</span>
             
 
             
@@ -301,8 +301,8 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="5" data-linenumber="6">
-            <span class="hits">5</span>
+          <li class="covered" data-hits="6" data-linenumber="6">
+            <span class="hits">6</span>
             
 
             
@@ -472,7 +472,7 @@
 
             
 
-            <code class="ruby">      render json: ItemsSerializer.format_item(item)</code>
+            <code class="ruby">      render json: ItemsSerializer.format_item(item), status: :created</code>
           </li>
         </div>
       
@@ -494,7 +494,7 @@
 
             
 
-            <code class="ruby">      render json: { response: &#39;Bad Request&#39; }, status: 400</code>
+            <code class="ruby">      render json: { response: &#39;Bad Request&#39; }, status: :bad_request</code>
           </li>
         </div>
       
@@ -560,7 +560,7 @@
 
             
 
-            <code class="ruby">      item = Item.delete(params[:id])</code>
+            <code class="ruby">      Item.delete(params[:id])</code>
           </li>
         </div>
       
@@ -571,7 +571,7 @@
 
             
 
-            <code class="ruby">      render json: { response: &#39;No Content&#39; }, status: 204</code>
+            <code class="ruby">      render json: { response: &#39;No Content&#39; }, status: :no_content</code>
           </li>
         </div>
       
@@ -1054,8 +1054,8 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="16" data-linenumber="5">
-            <span class="hits">16</span>
+          <li class="covered" data-hits="17" data-linenumber="5">
+            <span class="hits">17</span>
             
 
             
@@ -1065,8 +1065,8 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="16" data-linenumber="6">
-            <span class="hits">16</span>
+          <li class="covered" data-hits="17" data-linenumber="6">
+            <span class="hits">17</span>
             
 
             
@@ -1689,8 +1689,8 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="5" data-linenumber="3">
-            <span class="hits">5</span>
+          <li class="covered" data-hits="6" data-linenumber="3">
+            <span class="hits">6</span>
             
 
             
@@ -1700,8 +1700,8 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="140" data-linenumber="4">
-            <span class="hits">140</span>
+          <li class="covered" data-hits="2623" data-linenumber="4">
+            <span class="hits">2623</span>
             
 
             
