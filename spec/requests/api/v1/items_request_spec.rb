@@ -172,11 +172,13 @@ RSpec.describe 'Items API' do
   end
 
   describe 'update an item' do
-    it 'updates an item if in record' do
+    it 'updates an item if in record and valid attributes' do
+      merchant = create(:merchant)
       item = create(:item)
       previous_name = item.name
       item_params = ({
-                "name": "value1"
+                "name": "value1",
+                "merchant_id": merchant.id
               })
       headers = {"CONTENT_TYPE" => "application/json"}
 
@@ -190,13 +192,14 @@ RSpec.describe 'Items API' do
     end
 
     it 'returns 404 if merchant id invalid' do
+      item = create(:item)
       item_params = ({
                 "name": "value1",
-                "merchant_id": 1345
+                "merchant_id": 98123
               })
       headers = {"CONTENT_TYPE" => "application/json"}
 
-      patch "/api/v1/items/143254", headers: headers, params: JSON.generate({item: item_params})
+      patch "/api/v1/items/#{item.id}", headers: headers, params: JSON.generate({item: item_params})
 
       expect(response.status).to eq(404)
     end
