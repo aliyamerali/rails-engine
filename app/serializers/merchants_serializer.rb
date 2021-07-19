@@ -17,4 +17,12 @@ class MerchantsSerializer
           "attributes":
            { "name": merchant.name } } }
   end
+
+  def self.empty_response
+    { data:
+        { "id": nil,
+          "type": 'merchant',
+          "attributes":
+           { "name": nil } } }
+  end
 end

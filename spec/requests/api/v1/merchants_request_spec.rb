@@ -134,4 +134,54 @@ RSpec.describe 'Merchants API' do
       expect(response.status).to eq(404)
     end
   end
+
+  describe 'find one merchant based on name query param' do
+    it 'returns a single merchant object, if found' do
+      create(:merchant, name: "Turing School")
+      create(:merchant, name: "Hoops Only")
+
+      param = "ring"
+      get "/api/v1/merchants/find?name=#{param}"
+
+      merchant = JSON.parse(response.body, symbolize_names: true)[:data]
+      expect(response).to be_successful
+
+      expect(merchant).to be_a(Hash)
+      expect(merchant[:attributes][:name]).to eq("Turing School")
+    end
+
+    it 'returns first object in case-sensitive alpha order if multiple matches' do
+      create(:merchant, name: "Turing School")
+      create(:merchant, name: "Zesty Ringalings")
+      create(:merchant, name: "Rings R Us")
+      create(:merchant, name: "Hoops Only")
+
+      param = "ring"
+      get "/api/v1/merchants/find?name=#{param}"
+      expect(response).to be_successful
+      merchant = JSON.parse(response.body, symbolize_names: true)[:data]
+
+      expect(merchant).to be_a(Hash)
+      expect(merchant[:attributes][:name]).to eq("Rings R Us")
+    end
+
+    it 'returns empty response not found if no query sent or no matches to query' do
+      create(:merchant, name: "Hoops Only")
+      param = "ring"
+
+      get "/api/v1/merchants/find?name=#{param}"
+      output = JSON.parse(response.body, symbolize_names: true)[:data]
+
+      expect(response.status).to eq(200)
+      expect(output).to be_a(Hash)
+      expect(output[:id]).to eq(nil)
+
+      get "/api/v1/merchants/find"
+      output = JSON.parse(response.body, symbolize_names: true)[:data]
+
+      expect(response.status).to eq(200)
+      expect(output).to be_a(Hash)
+      expect(output[:id]).to eq(nil)
+    end
+  end
 end
