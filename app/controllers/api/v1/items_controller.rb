@@ -56,9 +56,8 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def find_all
-    # binding.pry
-    if params[:name] && params[:name] != ''
-      items = Item.where('name ILIKE ?', "%#{params[:name]}%").order(name: :asc)
+    if valid_find_all?
+      items = Item.find_all(params[:name], params[:min_price], params[:max_price])
       render json: ItemsSerializer.format_items(items)
     else
       render json: { response: 'Bad Request' }, status: :bad_request
@@ -77,6 +76,14 @@ class Api::V1::ItemsController < ApplicationController
     else
       true
     end
+  end
+
+  def valid_find_all?
+    name_only = (params[:name] && params[:name] != '') && !params[:min_price] && !params[:max_price]
+    min_or_max_only = !params[:name] && (params[:min_price] || params[:max_price])
+    min_and_max_only = !params[:name] && (params[:min_price] && params[:max_price])
+
+    name_only || min_or_max_only || min_and_max_only
   end
 
 end
