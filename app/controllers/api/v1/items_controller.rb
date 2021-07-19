@@ -85,5 +85,4 @@ class Api::V1::ItemsController < ApplicationController
 
     name_only || min_or_max_only || min_and_max_only
   end
-
 end
