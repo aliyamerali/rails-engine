@@ -20,7 +20,7 @@ class Api::V1::MerchantsController < ApplicationController
 
   def find
     if params[:name]
-      merchant = Merchant.where('name ILIKE ?', "%#{params[:name]}%").first
+      merchant = Merchant.search_by_name(params[:name])
       render json: MerchantsSerializer.format_merchant(merchant)
     else
       render json: { response: 'No Content' }, status: :no_content
