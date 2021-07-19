@@ -56,12 +56,12 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def find_all
-    items = Item.where('name ILIKE ?', "%#{params[:name]}%").order(name: :asc)
-
-    if items
+    # binding.pry
+    if params[:name] && params[:name] != ''
+      items = Item.where('name ILIKE ?', "%#{params[:name]}%").order(name: :asc)
       render json: ItemsSerializer.format_items(items)
     else
-      render json: ItemsSerializer.empty_response
+      render json: { response: 'Bad Request' }, status: :bad_request
     end
   end
 
