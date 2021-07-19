@@ -24,7 +24,7 @@ class Api::V1::MerchantsController < ApplicationController
     if merchant
       render json: MerchantsSerializer.format_merchant(merchant)
     else
-      render json: { response: 'Not Found' }, status: :not_found
+      render json: MerchantsSerializer.empty_response
     end
   end
 end

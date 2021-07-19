@@ -165,15 +165,23 @@ RSpec.describe 'Merchants API' do
       expect(merchant[:attributes][:name]).to eq("Rings R Us")
     end
 
-    it 'returns 404 not found if no query sent or no matches to query' do
+    it 'returns empty response not found if no query sent or no matches to query' do
       create(:merchant, name: "Hoops Only")
       param = "ring"
 
       get "/api/v1/merchants/find?name=#{param}"
-      expect(response.status).to eq(404)
+      output = JSON.parse(response.body, symbolize_names: true)[:data]
+
+      expect(response.status).to eq(200)
+      expect(output).to be_a(Hash)
+      expect(output[:id]).to eq(nil)
 
       get "/api/v1/merchants/find"
-      expect(response.status).to eq(404)
+      output = JSON.parse(response.body, symbolize_names: true)[:data]
+
+      expect(response.status).to eq(200)
+      expect(output).to be_a(Hash)
+      expect(output[:id]).to eq(nil)
     end
   end
 end
