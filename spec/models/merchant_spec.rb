@@ -25,6 +25,7 @@ RSpec.describe Merchant, type: :model do
 
         expect(Merchant.search_by_name(query)).to eq(turing)
       end
+
       it 'returns first object in case-sensitive alpha order if multiple matches' do
         turing = create(:merchant, name: "Turing School")
         zest = create(:merchant, name: "Zesty Ringalings")
@@ -34,7 +35,16 @@ RSpec.describe Merchant, type: :model do
 
         expect(Merchant.search_by_name(query)).to eq(rings)
       end
-      it 'what does it do if there is no match? empty array?'
+
+      it 'returns nil if no match found' do |variable|
+        turing = create(:merchant, name: "Turing School")
+        zest = create(:merchant, name: "Zesty Ringalings")
+        rings = create(:merchant, name: "Rings R Us")
+        hoops = create(:merchant, name: "Hoops Only")
+        query = "dogs"
+
+        expect(Merchant.search_by_name(query)).to eq(nil)
+      end
     end
   end
 end
