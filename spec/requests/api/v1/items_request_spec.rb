@@ -254,4 +254,42 @@ RSpec.describe 'Items API' do
       expect(response.status).to eq(404)
     end
   end
+
+  describe 'find all items that match a search criteria' do
+    it 'returns an array of matches in alphabetical order by name' do
+      create(:item, name: "Alpha ring")
+      create(:item, name: "beta ring")
+      create(:item, name: "Beta thing")
+      create(:item, name: "Gamma ring")
+
+      param = "ring"
+      get "/api/v1/items/find_all?name=#{param}"
+
+      items = JSON.parse(response.body, symbolize_names: true)[:data]
+      expect(response).to be_successful
+
+      expect(items).to be_a(Array)
+      expect(items.count).to eq(3)
+      expect(items.first[:attributes][:name]).to eq("Alpha ring")
+      expect(items.second[:attributes][:name]).to eq("Gamma ring")
+      expect(items.last[:attributes][:name]).to eq("beta ring")
+    end
+
+    it 'returns an empty array if no matches' do
+      create(:item, name: "Beta thing")
+
+      param = "ring"
+      get "/api/v1/items/find_all?name=#{param}"
+
+      items = JSON.parse(response.body, symbolize_names: true)[:data]
+      expect(response).to be_successful
+
+      expect(items).to be_a(Array)
+      expect(items.count).to eq(0)
+    end
+
+    it 'can take search param for min_price OR max_price'
+    it 'can take search param for min_price AND max_price'
+    it 'can NOT take search param for name and any price param'
+  end
 end
