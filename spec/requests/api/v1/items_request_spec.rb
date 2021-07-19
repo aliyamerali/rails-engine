@@ -254,4 +254,99 @@ RSpec.describe 'Items API' do
       expect(response.status).to eq(404)
     end
   end
+
+  describe 'find all items that match a search criteria' do
+    it 'returns an array of matches in alphabetical order by name' do
+      create(:item, name: "Alpha ring")
+      create(:item, name: "beta ring")
+      create(:item, name: "Beta thing")
+      create(:item, name: "Gamma ring")
+
+      param = "ring"
+      get "/api/v1/items/find_all?name=#{param}"
+
+      items = JSON.parse(response.body, symbolize_names: true)[:data]
+      expect(response).to be_successful
+
+      expect(items).to be_a(Array)
+      expect(items.count).to eq(3)
+      expect(items.first[:attributes][:name]).to eq("Alpha ring")
+      expect(items.second[:attributes][:name]).to eq("Gamma ring")
+      expect(items.last[:attributes][:name]).to eq("beta ring")
+    end
+
+    it 'returns an empty array if no matches' do
+      create(:item, name: "Beta thing")
+
+      param = "ring"
+      get "/api/v1/items/find_all?name=#{param}"
+
+      items = JSON.parse(response.body, symbolize_names: true)[:data]
+      expect(response).to be_successful
+
+      expect(items).to be_a(Array)
+      expect(items.count).to eq(0)
+    end
+
+    it 'can take search param for min_price OR max_price' do
+      create(:item, unit_price: 10.99)
+      create(:item, unit_price: 3.99)
+      create(:item, unit_price: 9.99)
+
+      param = 5
+
+      get "/api/v1/items/find_all?min_price=#{param}"
+      items = JSON.parse(response.body, symbolize_names: true)[:data]
+
+      expect(response).to be_successful
+      expect(items).to be_a(Array)
+      expect(items.count).to eq(2)
+      expect(items.first[:attributes][:unit_price]).to eq(10.99)
+      expect(items.last[:attributes][:unit_price]).to eq(9.99)
+
+      get "/api/v1/items/find_all?max_price=#{param}"
+      items = JSON.parse(response.body, symbolize_names: true)[:data]
+
+      expect(response).to be_successful
+      expect(items).to be_a(Array)
+      expect(items.count).to eq(1)
+      expect(items.first[:attributes][:unit_price]).to eq(3.99)
+    end
+
+    it 'can take search param for min_price AND max_price' do
+      create(:item, unit_price: 10.99)
+      create(:item, unit_price: 3.99)
+      create(:item, unit_price: 5.99)
+      create(:item, unit_price: 9.99)
+
+      min = 5
+      max = 10
+
+      get "/api/v1/items/find_all?min_price=#{min}&max_price=#{max}"
+      items = JSON.parse(response.body, symbolize_names: true)[:data]
+
+      expect(response).to be_successful
+      expect(items).to be_a(Array)
+      expect(items.count).to eq(2)
+      expect(items.first[:attributes][:unit_price]).to eq(5.99)
+      expect(items.last[:attributes][:unit_price]).to eq(9.99)
+    end
+
+    it 'can NOT take search param for name and any price param' do
+      min = 5
+      max = 10
+      param = "ring"
+
+      get "/api/v1/items/find_all?name=#{param}&min_price=#{min}&max_price=#{max}"
+      expect(response.status).to eq(400)
+    end
+
+    it 'returns 400 if no search param or empty param' do
+      get "/api/v1/items/find_all"
+      expect(response.status).to eq(400)
+
+      get "/api/v1/items/find_all?name="
+      expect(response.status).to eq(400)
+    end
+  end
 end

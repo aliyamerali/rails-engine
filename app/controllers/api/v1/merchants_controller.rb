@@ -19,12 +19,15 @@ class Api::V1::MerchantsController < ApplicationController
   end
 
   def find
-    merchant = Merchant.search_by_name(params[:name]) if params[:name]
-
-    if merchant
-      render json: MerchantsSerializer.format_merchant(merchant)
+    if params[:name] && params[:name] != ''
+      merchant = Merchant.search_by_name(params[:name]) if params[:name]
+      if merchant
+        render json: MerchantsSerializer.format_merchant(merchant)
+      else
+        render json: MerchantsSerializer.empty_response
+      end
     else
-      render json: MerchantsSerializer.empty_response
+      render json: { response: 'Bad Request' }, status: :bad_request
     end
   end
 end

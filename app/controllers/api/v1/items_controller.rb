@@ -46,6 +46,24 @@ class Api::V1::ItemsController < ApplicationController
     end
   end
 
+  def merchants_items(merchant_id)
+    if Merchant.exists?(merchant_id)
+      items = Item.where(merchant_id: merchant_id)
+      render json: ItemsSerializer.format_items(items)
+    else
+      render json: { response: 'Not Found' }, status: :not_found
+    end
+  end
+
+  def find_all
+    if valid_find_all?
+      items = Item.find_all(params[:name], params[:min_price], params[:max_price])
+      render json: ItemsSerializer.format_items(items)
+    else
+      render json: { response: 'Bad Request' }, status: :bad_request
+    end
+  end
+
   private
 
   def item_params
@@ -60,12 +78,11 @@ class Api::V1::ItemsController < ApplicationController
     end
   end
 
-  def merchants_items(merchant_id)
-    if Merchant.exists?(merchant_id)
-      items = Item.where(merchant_id: merchant_id)
-      render json: ItemsSerializer.format_items(items)
-    else
-      render json: { response: 'Not Found' }, status: :not_found
-    end
+  def valid_find_all?
+    name_only = (params[:name] && params[:name] != '') && !params[:min_price] && !params[:max_price]
+    min_or_max_only = !params[:name] && (params[:min_price] || params[:max_price])
+    min_and_max_only = !params[:name] && (params[:min_price] && params[:max_price])
+
+    name_only || min_or_max_only || min_and_max_only
   end
 end
