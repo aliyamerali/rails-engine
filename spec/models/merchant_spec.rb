@@ -16,5 +16,25 @@ RSpec.describe Merchant, type: :model do
       expect(merchants.paginate(20,1).first.id).to eq(Merchant.first.id)
       expect(merchants.paginate(15,4).first.id).to eq(Merchant.first.id + 45)
     end
+
+    describe '.search_by_name(query)' do
+      it 'returns a single record of a merchant' do
+        turing = create(:merchant, name: "Turing School")
+        hoops = create(:merchant, name: "Hoops Only")
+        query = "ring"
+
+        expect(Merchant.search_by_name(query)).to eq(turing)
+      end
+      it 'returns first object in case-sensitive alpha order if multiple matches' do
+        turing = create(:merchant, name: "Turing School")
+        zest = create(:merchant, name: "Zesty Ringalings")
+        rings = create(:merchant, name: "Rings R Us")
+        hoops = create(:merchant, name: "Hoops Only")
+        query = "ring"
+
+        expect(Merchant.search_by_name(query)).to eq(rings)
+      end
+      it 'what does it do if there is no match? empty array?'
+    end
   end
 end

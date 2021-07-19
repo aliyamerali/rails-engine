@@ -17,4 +17,13 @@ class Api::V1::MerchantsController < ApplicationController
       render json: { response: 'Not Found' }, status: :not_found
     end
   end
+
+  def find
+    if params[:name]
+      merchant = Merchant.where('name ILIKE ?', "%#{params[:name]}%").first
+      render json: MerchantsSerializer.format_merchant(merchant)
+    else
+      render json: { response: 'No Content' }, status: :no_content
+    end
+  end
 end
