@@ -7,7 +7,7 @@ class Item < ApplicationRecord
   validates :description, presence: true
   validates :unit_price, presence: true
 
-  def self.find_all(name, min_price, max_price)
+  def self.find_all(name=nil, min_price=nil, max_price=nil)
     if name == nil
       min_price = 0 if min_price == nil
       max_price = Item.maximum(:unit_price) if max_price == nil
