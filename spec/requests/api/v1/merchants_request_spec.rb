@@ -134,4 +134,35 @@ RSpec.describe 'Merchants API' do
       expect(response.status).to eq(404)
     end
   end
+
+  describe 'find one merchant based on name query param' do
+    it 'returns a single merchant object, if found' do
+      create(:merchant, name: "Turing School")
+      create(:merchant, name: "Hoops Only")
+      query_param = "ring"
+
+      get "/api/v1/merchants/find?name=#{query_param}"
+
+      expect(response).to be_successful
+      merchant = JSON.parse(response.body, symbolize_names: true)[:data]
+
+      expect(merchant.count).to eq(1)
+      expect(merchant[:attributes][:name]).to eq("Turing School")
+    end
+
+    it 'returns first object in case-sensitive alpha order if multiple matches' do
+      create(:merchant, name: "Turing School")
+      create(:merchant, name: "Zesty Ringalings")
+      create(:merchant, name: "Rings R Us")
+      create(:merchant, name: "Hoops Only")
+
+      get "/api/v1/merchants/find?name=#{query_param}"
+
+      expect(response).to be_successful
+      merchant = JSON.parse(response.body, symbolize_names: true)[:data]
+
+      expect(merchant.count).to eq(1)
+      expect(merchant[:attributes][:name]).to eq("Rings R Us")
+    end
+  end
 end
