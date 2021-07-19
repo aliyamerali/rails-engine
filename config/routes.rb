@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       # NON RESTFUL ROUTES
       get '/merchants/find', to: 'merchants#find'
+      get '/items/find_all', to: 'items#find_all'
 
       # RESTFUL ROUTES
       resources :merchants, only: [:index, :show] do

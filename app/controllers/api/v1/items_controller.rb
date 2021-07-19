@@ -46,6 +46,25 @@ class Api::V1::ItemsController < ApplicationController
     end
   end
 
+  def merchants_items(merchant_id)
+    if Merchant.exists?(merchant_id)
+      items = Item.where(merchant_id: merchant_id)
+      render json: ItemsSerializer.format_items(items)
+    else
+      render json: { response: 'Not Found' }, status: :not_found
+    end
+  end
+
+  def find_all
+    items = Item.where('name ILIKE ?', "%#{params[:name]}%").order(name: :asc)
+
+    if items
+      render json: ItemsSerializer.format_items(items)
+    else
+      render json: ItemsSerializer.empty_response
+    end
+  end
+
   private
 
   def item_params
@@ -60,12 +79,4 @@ class Api::V1::ItemsController < ApplicationController
     end
   end
 
-  def merchants_items(merchant_id)
-    if Merchant.exists?(merchant_id)
-      items = Item.where(merchant_id: merchant_id)
-      render json: ItemsSerializer.format_items(items)
-    else
-      render json: { response: 'Not Found' }, status: :not_found
-    end
-  end
 end
