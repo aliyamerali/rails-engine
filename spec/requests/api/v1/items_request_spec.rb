@@ -84,14 +84,14 @@ RSpec.describe 'Items API' do
     end
 
     it 'returns all items if per_page is really big' do
-      create_list(:item, 243)
+      create_list(:item, 2483)
 
-      get '/api/v1/items?per_page=25000'
+      get '/api/v1/items?per_page=250000'
 
       expect(response).to be_successful
       items = JSON.parse(response.body, symbolize_names: true)[:data]
 
-      expect(items.count).to eq(243)
+      expect(items.count).to eq(2483)
     end
   end
 
