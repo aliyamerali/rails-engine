@@ -20,7 +20,9 @@ RSpec.describe 'Merchants API' do
     end
 
     it 'takes query params for per page and page, returing accurate data' do
-      create_list(:merchant, 200)
+      200.times do |index|
+        Merchant.create!(name: "merchant-#{index+1}")
+      end
 
       get '/api/v1/merchants?per_page=50&page=2'
 
@@ -30,9 +32,7 @@ RSpec.describe 'Merchants API' do
       expect(merchants.count).to eq(50)
 
       expect(merchants.first).to have_key(:id)
-      expect(merchants.first[:id].to_i).to_not eq(Merchant.first.id)
-
-      expect(merchants.first[:attributes]).to have_key(:name)
+      expect(merchants.first[:attributes][:name]).to eq("merchant-51")
       expect(merchants.first[:attributes][:name]).to be_a(String)
 
       get '/api/v1/merchants?per_page=50&page=3'
@@ -43,9 +43,7 @@ RSpec.describe 'Merchants API' do
       expect(merchants.count).to eq(50)
 
       expect(merchants.first).to have_key(:id)
-      expect(merchants.first[:id].to_i).to eq(Merchant.first.id + 100)
-
-      expect(merchants.first[:attributes]).to have_key(:name)
+      expect(merchants.first[:attributes][:name]).to eq("merchant-101")
       expect(merchants.first[:attributes][:name]).to be_a(String)
     end
 
