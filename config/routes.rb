@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       get '/merchants/find', to: 'merchants#find'
       get '/items/find_all', to: 'items#find_all'
       get '/revenue/merchants/:id', to: 'revenue#merchant_total_revenue'
+      get '/revenue/merchants', to: 'revenue#most_revenue_merchants'
       # RESTFUL ROUTES
       resources :merchants, only: [:index, :show] do
         resources :items, only: [:index]
