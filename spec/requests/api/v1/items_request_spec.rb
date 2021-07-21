@@ -29,7 +29,11 @@ RSpec.describe 'Items API' do
     end
 
     it 'takes query params for per page and page, returing accurate data' do
-      create_list(:item, 200)
+      merchant = create(:merchant)
+
+      200.times do |index|
+        Item.create!(name: "item-#{index+1}" ,description: "test", unit_price: index, merchant_id: merchant.id)
+      end
 
       get '/api/v1/items?per_page=50&page=2'
       items_pg2 = JSON.parse(response.body, symbolize_names: true)[:data]
@@ -38,7 +42,7 @@ RSpec.describe 'Items API' do
       expect(items_pg2.count).to eq(50)
 
       expect(items_pg2.first).to have_key(:id)
-      expect(items_pg2.first[:id].to_i).to_not eq(Item.first.id)
+      expect(items_pg2.first[:attributes][:name]).to eq("item-51")
 
       expect(items_pg2.first[:attributes]).to have_key(:name)
       expect(items_pg2.first[:attributes][:name]).to be_a(String)
@@ -53,16 +57,20 @@ RSpec.describe 'Items API' do
       expect(items_pg2.first[:attributes][:merchant_id]).to be_a(Integer)
 
       get '/api/v1/items?per_page=50&page=3'
-
+      #
       expect(response).to be_successful
       items_pg3 = JSON.parse(response.body, symbolize_names: true)[:data]
 
       expect(items_pg3.count).to eq(50)
-      expect(items_pg3.first[:id].to_i).to_not eq(items_pg2.first[:id].to_i)
+      expect(items_pg3.first[:attributes][:name]).to eq("item-101")
     end
 
     it 'defaults to page 1 if page given is less than or eq to 0' do
-      create_list(:item, 30)
+      merchant = create(:merchant)
+
+      200.times do |index|
+        Item.create!(name: "item-#{index+1}" ,description: "test", unit_price: index, merchant_id: merchant.id)
+      end
 
       get '/api/v1/items?page=0'
 
@@ -70,7 +78,7 @@ RSpec.describe 'Items API' do
       items = JSON.parse(response.body, symbolize_names: true)[:data]
 
       expect(items.count).to eq(20)
-      expect(items.first[:id].to_i).to eq(Item.first.id)
+      expect(items.first[:attributes][:name]).to eq("item-1")
     end
 
     it 'returns an empty array of data for 0 results' do
@@ -248,6 +256,7 @@ RSpec.describe 'Items API' do
       get "/api/v1/items/#{item.id}/merchant"
 
     end
+
     it 'returns a 404 if the item does not exist' do
       get "/api/v1/items/456788/merchant"
 

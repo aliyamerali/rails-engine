@@ -47,4 +47,31 @@ RSpec.describe Merchant, type: :model do
       end
     end
   end
+
+  describe 'instance methods' do
+    it '#total_revenue returns the total revenue for the merchant' do
+      customer = create(:customer)
+      merchant = create(:merchant)
+      item = create(:item, merchant_id: merchant.id)
+
+      invoice1 = Invoice.create!(customer_id: customer.id, merchant_id: merchant.id, status: "shipped") #ONLY INVOICE WITH REVENUE - 125
+      invoice2 = Invoice.create!(customer_id: customer.id, merchant_id: merchant.id, status: "packaged") #DQ b/c of invoice status
+      invoice3 = Invoice.create!(customer_id: customer.id, merchant_id: merchant.id, status: "shipped") #DQ b/c of transaction status
+      invoice4 = Invoice.create!(customer_id: customer.id, merchant_id: merchant.id, status: "shipped") #DQ b/c of transaction status
+
+      invoice1.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+      invoice1.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "failure")
+      invoice2.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+      invoice3.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "failure")
+      invoice4.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+
+      InvoiceItem.create!(item_id: item.id, invoice_id: invoice1.id, quantity: 5, unit_price: 5.0)
+      InvoiceItem.create!(item_id: item.id, invoice_id: invoice1.id, quantity: 10, unit_price: 5.0)
+      InvoiceItem.create!(item_id: item.id, invoice_id: invoice2.id, quantity: 20, unit_price: 5.0)
+      InvoiceItem.create!(item_id: item.id, invoice_id: invoice3.id, quantity: 30, unit_price: 5.0)
+      InvoiceItem.create!(item_id: item.id, invoice_id: invoice4.id, quantity: 10, unit_price: 5.0)
+
+      expect(merchant.revenue).to eq(125.0)
+    end
+  end
 end
