@@ -1,5 +1,4 @@
 class Api::V1::RevenueController < ApplicationController
-  #TODO = REFACTOR revenue into model method and add test
   def merchant_total_revenue
     if Merchant.exists?(params[:id])
       merchant = Merchant.find(params[:id])
