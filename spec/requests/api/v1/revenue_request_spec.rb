@@ -82,15 +82,21 @@ RSpec.describe 'Revenue API endpoints' do
 
       merchants = JSON.parse(response.body, symbolize_names: true)[:data]
 
-      expect(mercants.length).to eq(3)
-      expect(merchants.first[:id]).to eq(merchant4.id)
+      expect(merchants.length).to eq(3)
+      expect(merchants.first[:id].to_i).to eq(merchant4.id)
       expect(merchants.first[:attributes][:revenue]).to eq(300.0)
-      expect(merchants.second[:id]).to eq(merchant3.id)
+      expect(merchants.second[:id].to_i).to eq(merchant3.id)
       expect(merchants.second[:attributes][:revenue]).to eq(150.0)
-      expect(merchants.third[:id]).to eq(merchant1.id)
+      expect(merchants.third[:id].to_i).to eq(merchant1.id)
       expect(merchants.third[:attributes][:revenue]).to eq(125.0)
     end
 
-    it 'returns an error if the quantity is missing or invalid'
+    it 'returns an error if the quantity is missing or invalid' do
+      get "/api/v1/revenue/merchants?quantity=0"
+      expect(response.status).to eq(400)
+
+      get "/api/v1/revenue/merchants"
+      expect(response.status).to eq(400)
+    end
   end
 end

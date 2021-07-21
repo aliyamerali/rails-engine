@@ -8,4 +8,16 @@ class RevenueSerializer
            { "revenue": revenue } }
     }
   end
+
+  def self.merchants_revenue(merchants)
+    {
+      data: merchants.map do |merchant|
+        { "id": merchant.id.to_s,
+          "type": 'merchant',
+          "attributes":
+           { "name": merchant.name,
+             "revenue": merchant.revenue} }
+      end
+    }
+  end
 end
