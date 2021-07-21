@@ -10,16 +10,6 @@ RSpec.describe 'Revenue API endpoints' do
       merchant = create(:merchant)
       item = create(:item, merchant_id: merchant.id)
 
-      # create(:invoice, customer_id: customer.id, merchant_id: merchant.id, status: 'shipped') do |invoice|
-      #   create_list(:invoice_item, 5, item_id: item.id)
-      #   create_list(:transaction, 5)
-      # end
-      #
-      # create(:invoice, merchant_id: merchant.id, customer_id: customer.id, status: 'packaged') do |invoice|
-      #   create_list(:invoice_item, 5, item_id: item.id)
-      #   create_list(:transaction, 5)
-      # end
-
       invoice1 = Invoice.create!(customer_id: customer.id, merchant_id: merchant.id, status: "shipped") #ONLY INVOICE WITH REVENUE - 125
       invoice2 = Invoice.create!(customer_id: customer.id, merchant_id: merchant.id, status: "packaged") #DQ b/c of invoice status
       invoice3 = Invoice.create!(customer_id: customer.id, merchant_id: merchant.id, status: "shipped") #DQ b/c of transaction status

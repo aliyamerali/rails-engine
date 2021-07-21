@@ -1,3 +1,5 @@
+# FILE ONLY NEEDED if used for revenue setup
+
 FactoryBot.define do
   factory :customer do
     first_name { Faker::App.name }

@@ -7,4 +7,12 @@ class Merchant < ApplicationRecord
             .order(name: :asc)
             .first
   end
+
+  def revenue
+    invoices
+    .joins(:transactions, :invoice_items)
+    .where(transactions: {result: "success"})
+    .where(invoices: {status: "shipped"})
+    .sum('invoice_items.unit_price * invoice_items.quantity')
+  end
 end
