@@ -16,7 +16,7 @@ class RevenueSerializer
           "type": 'merchant_name_revenue',
           "attributes":
            { "name": merchant.name,
-             "revenue": merchant.revenue} }
+             "revenue": merchant.revenue } }
       end
     }
   end

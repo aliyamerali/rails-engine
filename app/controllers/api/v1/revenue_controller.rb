@@ -12,7 +12,7 @@ class Api::V1::RevenueController < ApplicationController
   def most_revenue_merchants
     limit = params[:quantity].to_i
 
-    if limit > 0
+    if limit.positive?
       merchants = Merchant.most_revenue(limit)
       render json: RevenueSerializer.merchants_revenue(merchants)
     else
