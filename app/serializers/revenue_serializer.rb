@@ -13,7 +13,7 @@ class RevenueSerializer
     {
       data: merchants.map do |merchant|
         { "id": merchant.id.to_s,
-          "type": 'merchant',
+          "type": 'merchant_name_revenue',
           "attributes":
            { "name": merchant.name,
              "revenue": merchant.revenue} }

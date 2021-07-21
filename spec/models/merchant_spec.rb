@@ -46,6 +46,49 @@ RSpec.describe Merchant, type: :model do
         expect(Merchant.search_by_name(query)).to eq(nil)
       end
     end
+
+    it '.most_revenue(x) returns top x merchants by total revenue' do
+      customer = create(:customer)
+      merchant1 = create(:merchant) # 125
+      merchant2 = create(:merchant) # 100
+      merchant3 = create(:merchant) # 150
+      merchant4 = create(:merchant) # 300
+      item1 = create(:item, merchant_id: merchant1.id)
+      item2 = create(:item, merchant_id: merchant2.id)
+      item3 = create(:item, merchant_id: merchant3.id)
+      item4 = create(:item, merchant_id: merchant4.id)
+
+      invoice1a = Invoice.create!(customer_id: customer.id, merchant_id: merchant1.id, status: "shipped")
+      invoice1b = Invoice.create!(customer_id: customer.id, merchant_id: merchant1.id, status: "shipped")
+      invoice2 = Invoice.create!(customer_id: customer.id, merchant_id: merchant2.id, status: "shipped")
+      invoice3 = Invoice.create!(customer_id: customer.id, merchant_id: merchant3.id, status: "shipped")
+      invoice4a = Invoice.create!(customer_id: customer.id, merchant_id: merchant4.id, status: "shipped")
+      invoice4b = Invoice.create!(customer_id: customer.id, merchant_id: merchant4.id, status: "shipped")
+
+      invoice1a.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+      invoice1a.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "failure")
+      invoice1b.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+      invoice2.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+      invoice3.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+      invoice4a.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+      invoice4b.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+
+      InvoiceItem.create!(item_id: item1.id, invoice_id: invoice1a.id, quantity: 5, unit_price: 5.0)
+      InvoiceItem.create!(item_id: item1.id, invoice_id: invoice1a.id, quantity: 10, unit_price: 5.0)
+      InvoiceItem.create!(item_id: item1.id, invoice_id: invoice1b.id, quantity: 10, unit_price: 5.0)
+      InvoiceItem.create!(item_id: item2.id, invoice_id: invoice2.id, quantity: 20, unit_price: 5.0)
+      InvoiceItem.create!(item_id: item3.id, invoice_id: invoice3.id, quantity: 30, unit_price: 5.0)
+      InvoiceItem.create!(item_id: item4.id, invoice_id: invoice4a.id, quantity: 10, unit_price: 5.0)
+      InvoiceItem.create!(item_id: item4.id, invoice_id: invoice4b.id, quantity: 10, unit_price: 25.0)
+
+      merchants = Merchant.most_revenue(2)
+
+      expect(merchants.length).to eq(2)
+      expect(merchants.first.id).to eq(merchant4.id)
+      expect(merchants.first.revenue).to eq(300.0)
+      expect(merchants.second.id).to eq(merchant3.id)
+      expect(merchants.second.revenue).to eq(150.0)
+    end
   end
 
   describe 'instance methods' do
