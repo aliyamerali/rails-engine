@@ -6,7 +6,7 @@ Rails.application.routes.draw do
       # NON RESTFUL ROUTES
       get '/merchants/find', to: 'merchants#find'
       get '/items/find_all', to: 'items#find_all'
-
+      get '/revenue/merchants/:id', to: 'revenue#merchant_total_revenue'
       # RESTFUL ROUTES
       resources :merchants, only: [:index, :show] do
         resources :items, only: [:index]
