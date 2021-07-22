@@ -19,4 +19,19 @@ class Api::V1::RevenueController < ApplicationController
       render json: { error: 'Bad Request' }, status: :bad_request
     end
   end
+
+  def all_revenue_in_date_range
+    if valid_date?(params[:start]) && valid_date?(params[:end])
+      revenue = Invoice.revenue_in_date_range(params[:start], params[:end])
+      render json: RevenueSerializer.all_revenue_over_range(revenue)
+    else
+      render json: { error: 'Bad Request' }, status: :bad_request
+    end
+  end
+
+  private
+
+  def valid_date?(date)
+    !date.nil? && date != ''
+  end
 end
