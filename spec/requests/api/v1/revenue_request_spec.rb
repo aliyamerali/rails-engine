@@ -144,5 +144,21 @@ RSpec.describe 'Revenue API endpoints' do
 
       expect(attributes[:revenue]).to eq(475.0)
     end
+
+    it 'returns error if either date ranges are missing' do
+      start_date = '2021-06-01'
+      end_date = '2021-06-30'
+
+      get "/api/v1/revenue?start=#{start_date}"
+      expect(response.status).to eq(400)
+
+      get "/api/v1/revenue?end=#{end_date}"
+      expect(response.status).to eq(400)
+    end
+
+    it 'returns error if both date ranges are missing' do
+      get "/api/v1/revenue"
+      expect(response.status).to eq(400)
+    end
   end
 end
