@@ -22,14 +22,7 @@ class Api::V1::RevenueController < ApplicationController
 
   def all_revenue_in_date_range
     if valid_date?(params[:start]) && valid_date?(params[:end])
-      start_date = DateTime.parse(params[:start])
-      end_date = DateTime.parse(params[:end]) + 1
-      revenue = Merchant
-              .joins(invoices: %i[transactions invoice_items])
-              .where(transactions: { result: 'success' })
-              .where(invoices: { status: 'shipped' })
-              .where("invoices.created_at >= ? AND invoices.created_at <= ?", start_date, end_date)
-              .sum('invoice_items.unit_price * invoice_items.quantity')
+      revenue = Invoice.revenue_in_date_range(params[:start], params[:end])
       render json: RevenueSerializer.all_revenue_over_range(revenue)
     else
       render json: { error: 'Bad Request' }, status: :bad_request
