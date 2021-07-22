@@ -164,4 +164,151 @@ RSpec.describe 'Revenue API endpoints' do
       expect(response.status).to eq(400)
     end
   end
+
+  describe 'items ranked by revenue' do
+    it 'returns x number of items ranked by most revenue' do
+      customer = create(:customer)
+      merchant1 = create(:merchant)
+      merchant2 = create(:merchant)
+      item1 = create(:item, name: "item1", merchant_id: merchant1.id) # 0
+      item2 = create(:item, name: "item2", merchant_id: merchant1.id) # 30
+      item3 = create(:item, name: "item3", merchant_id: merchant1.id) # 35
+      item4 = create(:item, name: "item4", merchant_id: merchant1.id) # 40
+      item5 = create(:item, name: "item5", merchant_id: merchant1.id) # 0
+      item6 = create(:item, name: "item6", merchant_id: merchant2.id) # 25
+      item7 = create(:item, name: "item7", merchant_id: merchant2.id) # 250
+      item8 = create(:item, name: "item8", merchant_id: merchant2.id) # 75
+      item9 = create(:item, name: "item9", merchant_id: merchant2.id) # 150
+      item10 = create(:item, name: "item10", merchant_id: merchant2.id) # 0
+
+      invoice1a = Invoice.create!(customer_id: customer.id, merchant_id: merchant1.id, status: "shipped")
+      invoice1b = Invoice.create!(customer_id: customer.id, merchant_id: merchant1.id, status: "shipped")
+      invoice1c = Invoice.create!(customer_id: customer.id, merchant_id: merchant1.id, status: "packaged")
+      invoice2a = Invoice.create!(customer_id: customer.id, merchant_id: merchant2.id, status: "shipped")
+      invoice2b = Invoice.create!(customer_id: customer.id, merchant_id: merchant2.id, status: "shipped")
+      invoice2c = Invoice.create!(customer_id: customer.id, merchant_id: merchant2.id, status: "packaged")
+
+      invoice1a.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "failure")
+      invoice1b.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+      invoice1c.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+      invoice2a.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+      invoice2a.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "failure")
+      invoice2b.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+      invoice2c.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+
+      InvoiceItem.create!(item_id: item1.id, invoice_id: invoice1a.id, quantity: 5, unit_price: 5.0) # 25 - DQ
+      InvoiceItem.create!(item_id: item2.id, invoice_id: invoice1b.id, quantity: 6, unit_price: 5.0) # 30
+      InvoiceItem.create!(item_id: item3.id, invoice_id: invoice1b.id, quantity: 7, unit_price: 5.0) # 35
+      InvoiceItem.create!(item_id: item4.id, invoice_id: invoice1b.id, quantity: 8, unit_price: 5.0) # 40
+      InvoiceItem.create!(item_id: item5.id, invoice_id: invoice1c.id, quantity: 30, unit_price: 5.0) # 150 - DQ
+      InvoiceItem.create!(item_id: item6.id, invoice_id: invoice2a.id, quantity: 5, unit_price: 5.0) # 25
+      InvoiceItem.create!(item_id: item7.id, invoice_id: invoice2b.id, quantity: 10, unit_price: 25.0) # 250
+      InvoiceItem.create!(item_id: item8.id, invoice_id: invoice2b.id, quantity: 3, unit_price: 25.0) # 75
+      InvoiceItem.create!(item_id: item9.id, invoice_id: invoice2b.id, quantity: 6, unit_price: 25.0) # 150
+      InvoiceItem.create!(item_id: item10.id, invoice_id: invoice2c.id, quantity: 10, unit_price: 25.0) # 250 - DQ
+
+      get "/api/v1/revenue/items?quantity=4"
+
+      items = JSON.parse(response.body, symbolize_names: true)[:data]
+
+      expect(response).to be_successful
+      expect(items.length).to eq(4)
+
+      expect(items.first[:id].to_i).to eq(item7.id)
+      expect(items.first[:attributes][:revenue]).to eq(250.0)
+
+      expect(items.second[:id].to_i).to eq(item9.id)
+      expect(items.second[:attributes][:revenue]).to eq(150.0)
+
+      expect(items.third[:id].to_i).to eq(item8.id)
+      expect(items.third[:attributes][:revenue]).to eq(75.0)
+
+      expect(items.last[:id].to_i).to eq(item4.id)
+      expect(items.last[:attributes][:revenue]).to eq(40.0)
+    end
+
+    it 'returns 10 items if no limit given' do
+      customer = create(:customer)
+      merchant1 = create(:merchant)
+      merchant2 = create(:merchant)
+      item1 = create(:item, name: "item1", merchant_id: merchant1.id) # 20
+      item2 = create(:item, name: "item2", merchant_id: merchant1.id) # 30
+      item3 = create(:item, name: "item3", merchant_id: merchant1.id) # 35
+      item4 = create(:item, name: "item4", merchant_id: merchant1.id) # 40
+      item5 = create(:item, name: "item5", merchant_id: merchant1.id) # 150
+      item6 = create(:item, name: "item6", merchant_id: merchant2.id) # 25
+      item7 = create(:item, name: "item7", merchant_id: merchant2.id) # 250
+      item8 = create(:item, name: "item8", merchant_id: merchant2.id) # 75
+      item9 = create(:item, name: "item9", merchant_id: merchant2.id) # 144
+      item10 = create(:item, name: "item10", merchant_id: merchant2.id) # 300
+
+      invoice1a = Invoice.create!(customer_id: customer.id, merchant_id: merchant1.id, status: "shipped")
+      invoice1b = Invoice.create!(customer_id: customer.id, merchant_id: merchant1.id, status: "shipped")
+      invoice1c = Invoice.create!(customer_id: customer.id, merchant_id: merchant1.id, status: "shipped")
+      invoice2a = Invoice.create!(customer_id: customer.id, merchant_id: merchant2.id, status: "shipped")
+      invoice2b = Invoice.create!(customer_id: customer.id, merchant_id: merchant2.id, status: "shipped")
+      invoice2c = Invoice.create!(customer_id: customer.id, merchant_id: merchant2.id, status: "shipped")
+
+      invoice1a.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+      invoice1b.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+      invoice1c.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+      invoice2a.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+      invoice2b.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+      invoice2c.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+
+      InvoiceItem.create!(item_id: item1.id, invoice_id: invoice1a.id, quantity: 4, unit_price: 5.0) # 20
+      InvoiceItem.create!(item_id: item2.id, invoice_id: invoice1b.id, quantity: 6, unit_price: 5.0) # 30
+      InvoiceItem.create!(item_id: item3.id, invoice_id: invoice1b.id, quantity: 7, unit_price: 5.0) # 35
+      InvoiceItem.create!(item_id: item4.id, invoice_id: invoice1b.id, quantity: 8, unit_price: 5.0) # 40
+      InvoiceItem.create!(item_id: item5.id, invoice_id: invoice1c.id, quantity: 30, unit_price: 5.0) # 150
+      InvoiceItem.create!(item_id: item6.id, invoice_id: invoice2a.id, quantity: 5, unit_price: 5.0) # 25
+      InvoiceItem.create!(item_id: item7.id, invoice_id: invoice2b.id, quantity: 10, unit_price: 25.0) # 250
+      InvoiceItem.create!(item_id: item8.id, invoice_id: invoice2b.id, quantity: 3, unit_price: 25.0) # 75
+      InvoiceItem.create!(item_id: item9.id, invoice_id: invoice2b.id, quantity: 6, unit_price: 24.0) # 144
+      InvoiceItem.create!(item_id: item10.id, invoice_id: invoice2c.id, quantity: 10, unit_price: 30.0) # 300
+
+      get "/api/v1/revenue/items"
+
+      items = JSON.parse(response.body, symbolize_names: true)[:data]
+
+      expect(response).to be_successful
+      expect(items.length).to eq(10)
+
+      expect(items[0][:id].to_i).to eq(item10.id)
+      expect(items[0][:attributes][:revenue]).to eq(300.0)
+
+      expect(items[1][:id].to_i).to eq(item7.id)
+      expect(items[1][:attributes][:revenue]).to eq(250.0)
+
+      expect(items[2][:id].to_i).to eq(item5.id)
+      expect(items[2][:attributes][:revenue]).to eq(150.0)
+
+      expect(items[3][:id].to_i).to eq(item9.id)
+      expect(items[3][:attributes][:revenue]).to eq(144.0)
+
+      expect(items[4][:id].to_i).to eq(item8.id)
+      expect(items[4][:attributes][:revenue]).to eq(75.0)
+
+      expect(items[5][:id].to_i).to eq(item4.id)
+      expect(items[5][:attributes][:revenue]).to eq(40.0)
+
+      expect(items[6][:id].to_i).to eq(item3.id)
+      expect(items[6][:attributes][:revenue]).to eq(35.0)
+
+      expect(items[7][:id].to_i).to eq(item2.id)
+      expect(items[7][:attributes][:revenue]).to eq(30.0)
+
+      expect(items[8][:id].to_i).to eq(item6.id)
+      expect(items[8][:attributes][:revenue]).to eq(25.0)
+
+      expect(items[9][:id].to_i).to eq(item1.id)
+      expect(items[9][:attributes][:revenue]).to eq(20.0)
+    end
+
+    it 'returns an error if limit given is negative' do
+      get "/api/v1/revenue/items?quantity=-2"
+
+      expect(response.status).to eq(400)
+    end
+  end
 end

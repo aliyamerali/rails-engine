@@ -20,6 +20,17 @@ class Api::V1::RevenueController < ApplicationController
     end
   end
 
+  def most_revenue_items
+    limit = item_limit(params[:quantity])
+
+    if limit.positive?
+      items = Item.most_revenue(limit)
+      render json: RevenueSerializer.items_revenue(items)
+    else
+      render json: { error: 'Bad Request' }, status: :bad_request
+    end
+  end
+
   def all_revenue_in_date_range
     if valid_date?(params[:start]) && valid_date?(params[:end])
       revenue = Invoice.revenue_in_date_range(params[:start], params[:end])
@@ -33,5 +44,13 @@ class Api::V1::RevenueController < ApplicationController
 
   def valid_date?(date)
     !date.nil? && date != ''
+  end
+
+  def item_limit(passed_param)
+    if passed_param.nil?
+      10
+    else
+      passed_param.to_i
+    end
   end
 end

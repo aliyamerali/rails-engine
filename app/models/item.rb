@@ -16,4 +16,14 @@ class Item < ApplicationRecord
       Item.where('name ILIKE ?', "%#{name}%").order(name: :asc)
     end
   end
+
+  def self.most_revenue(limit)
+    joins(invoice_items: { invoice: :transactions })
+      .select('items.*, SUM(invoice_items.unit_price * invoice_items.quantity) AS revenue')
+      .where(transactions: { result: 'success' })
+      .where(invoices: { status: 'shipped' })
+      .group(:id)
+      .order('revenue DESC')
+      .limit(limit)
+  end
 end

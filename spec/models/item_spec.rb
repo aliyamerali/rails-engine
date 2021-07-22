@@ -83,5 +83,63 @@ RSpec.describe Item, type: :model do
         expect(items.last.unit_price).to eq(9.99)
       end
     end
+
+    it '.most_revenue(limit) returns given number of items ranked by total revenue' do
+      customer = create(:customer)
+      merchant1 = create(:merchant)
+      merchant2 = create(:merchant)
+      item1 = create(:item, name: "item1", merchant_id: merchant1.id) # 0
+      item2 = create(:item, name: "item2", merchant_id: merchant1.id) # 30
+      item3 = create(:item, name: "item3", merchant_id: merchant1.id) # 35
+      item4 = create(:item, name: "item4", merchant_id: merchant1.id) # 40
+      item5 = create(:item, name: "item5", merchant_id: merchant1.id) # 0
+      item6 = create(:item, name: "item6", merchant_id: merchant2.id) # 25
+      item7 = create(:item, name: "item7", merchant_id: merchant2.id) # 250
+      item8 = create(:item, name: "item8", merchant_id: merchant2.id) # 75
+      item9 = create(:item, name: "item9", merchant_id: merchant2.id) # 150
+      item10 = create(:item, name: "item10", merchant_id: merchant2.id) # 0
+
+      invoice1a = Invoice.create!(customer_id: customer.id, merchant_id: merchant1.id, status: "shipped")
+      invoice1b = Invoice.create!(customer_id: customer.id, merchant_id: merchant1.id, status: "shipped")
+      invoice1c = Invoice.create!(customer_id: customer.id, merchant_id: merchant1.id, status: "packaged")
+      invoice2a = Invoice.create!(customer_id: customer.id, merchant_id: merchant2.id, status: "shipped")
+      invoice2b = Invoice.create!(customer_id: customer.id, merchant_id: merchant2.id, status: "shipped")
+      invoice2c = Invoice.create!(customer_id: customer.id, merchant_id: merchant2.id, status: "packaged")
+
+      invoice1a.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "failure")
+      invoice1b.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+      invoice1c.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+      invoice2a.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+      invoice2a.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "failure")
+      invoice2b.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+      invoice2c.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+
+      InvoiceItem.create!(item_id: item1.id, invoice_id: invoice1a.id, quantity: 5, unit_price: 5.0) # 25 - DQ
+      InvoiceItem.create!(item_id: item2.id, invoice_id: invoice1b.id, quantity: 6, unit_price: 5.0) # 30
+      InvoiceItem.create!(item_id: item3.id, invoice_id: invoice1b.id, quantity: 7, unit_price: 5.0) # 35
+      InvoiceItem.create!(item_id: item4.id, invoice_id: invoice1b.id, quantity: 8, unit_price: 5.0) # 40
+      InvoiceItem.create!(item_id: item5.id, invoice_id: invoice1c.id, quantity: 30, unit_price: 5.0) # 150 - DQ
+      InvoiceItem.create!(item_id: item6.id, invoice_id: invoice2a.id, quantity: 5, unit_price: 5.0) # 25
+      InvoiceItem.create!(item_id: item7.id, invoice_id: invoice2b.id, quantity: 10, unit_price: 25.0) # 250
+      InvoiceItem.create!(item_id: item8.id, invoice_id: invoice2b.id, quantity: 3, unit_price: 25.0) # 75
+      InvoiceItem.create!(item_id: item9.id, invoice_id: invoice2b.id, quantity: 6, unit_price: 25.0) # 150
+      InvoiceItem.create!(item_id: item10.id, invoice_id: invoice2c.id, quantity: 10, unit_price: 25.0) # 250 - DQ
+
+      items = Item.most_revenue(4)
+
+      expect(items.length).to eq(4)
+
+      expect(items.first.id).to eq(item7.id)
+      expect(items.first.revenue).to eq(250.0)
+
+      expect(items.second.id).to eq(item9.id)
+      expect(items.second.revenue).to eq(150.0)
+
+      expect(items.third.id).to eq(item8.id)
+      expect(items.third.revenue).to eq(75.0)
+
+      expect(items.last.id).to eq(item4.id)
+      expect(items.last.revenue).to eq(40.0)
+    end
   end
 end
