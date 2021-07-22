@@ -32,6 +32,6 @@ class Api::V1::RevenueController < ApplicationController
   private
 
   def valid_date?(date)
-    !date.nil? && date != ""
+    !date.nil? && date != ''
   end
 end

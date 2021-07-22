@@ -13,7 +13,7 @@ class Invoice < ApplicationRecord
     joins(:transactions, :invoice_items)
       .where(transactions: { result: 'success' })
       .where(invoices: { status: 'shipped' })
-      .where("invoices.created_at >= ? AND invoices.created_at <= ?", start_datetime, end_datetime)
+      .where(created_at: start_datetime..end_datetime)
       .sum('invoice_items.unit_price * invoice_items.quantity')
   end
 end
