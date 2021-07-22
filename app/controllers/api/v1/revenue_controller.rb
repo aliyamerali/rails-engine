@@ -22,7 +22,7 @@ class Api::V1::RevenueController < ApplicationController
 
   def most_revenue_items
     limit = item_limit(params[:quantity])
-    
+
     if limit.positive?
       items = Item.most_revenue(limit)
       render json: RevenueSerializer.items_revenue(items)
@@ -48,9 +48,9 @@ class Api::V1::RevenueController < ApplicationController
 
   def item_limit(passed_param)
     if passed_param.nil?
-      limit = 10
+      10
     else
-      limit = passed_param.to_i
+      passed_param.to_i
     end
   end
 end
