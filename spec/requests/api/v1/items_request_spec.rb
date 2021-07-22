@@ -242,8 +242,6 @@ RSpec.describe 'Items API' do
 
       expect(response.status).to eq(404)
     end
-
-    #TODO: Test for destroy any invoice if this was the only item on an invoice
   end
 
   describe 'item\'s merchant lookup' do

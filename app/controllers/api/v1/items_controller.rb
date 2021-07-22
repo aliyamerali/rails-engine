@@ -5,24 +5,24 @@ class Api::V1::ItemsController < ApplicationController
     else
       page = params[:page].try(:to_i) || 1
       per_page = params[:per_page].try(:to_i) || 20
-      items = Item.all.paginate(per_page, page)
-      render json: ItemsSerializer.format_items(items)
+      @item = Item.all.paginate(per_page, page)
+      render json: ItemSerializer.new(@item)
     end
   end
 
   def show
     if Item.exists?(params[:id])
-      item = Item.find(params[:id])
-      render json: ItemsSerializer.format_item(item)
+      @item = Item.find(params[:id])
+      render json: ItemSerializer.new(@item)
     else
       render json: { response: 'Not Found' }, status: :not_found
     end
   end
 
   def create
-    item = Item.new(item_params)
-    if item.save
-      render json: ItemsSerializer.format_item(item), status: :created
+    @item = Item.new(item_params)
+    if @item.save
+      render json: ItemSerializer.new(@item), status: :created
     else
       render json: { response: 'Bad Request' }, status: :bad_request
     end
@@ -30,8 +30,8 @@ class Api::V1::ItemsController < ApplicationController
 
   def update
     if Item.exists?(params[:id]) && valid_merchant?
-      item = Item.update(params[:id], item_params)
-      render json: ItemsSerializer.format_item(item)
+      @item = Item.update(params[:id], item_params)
+      render json: ItemSerializer.new(@item)
     else
       render json: { response: 'Not Found' }, status: :not_found
     end
@@ -48,17 +48,17 @@ class Api::V1::ItemsController < ApplicationController
 
   def merchants_items(merchant_id)
     if Merchant.exists?(merchant_id)
-      items = Item.where(merchant_id: merchant_id)
-      render json: ItemsSerializer.format_items(items)
+      @item = Item.where(merchant_id: merchant_id)
+      render json: ItemSerializer.new(@item)
     else
-      render json: { response: 'Not Found' }, status: :not_found
+      render json: { error: 'Not Found' }, status: :not_found
     end
   end
 
   def find_all
     if valid_find_all?
-      items = Item.find_all(params[:name], params[:min_price], params[:max_price])
-      render json: ItemsSerializer.format_items(items)
+      @item = Item.find_all(params[:name], params[:min_price], params[:max_price])
+      render json: ItemSerializer.new(@item)
     else
       render json: { response: 'Bad Request' }, status: :bad_request
     end
