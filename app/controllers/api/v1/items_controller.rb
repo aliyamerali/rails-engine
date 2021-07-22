@@ -51,7 +51,7 @@ class Api::V1::ItemsController < ApplicationController
       @item = Item.where(merchant_id: merchant_id)
       render json: ItemSerializer.new(@item)
     else
-      render json: { response: 'Not Found' }, status: :not_found
+      render json: { error: 'Not Found' }, status: :not_found
     end
   end
 
