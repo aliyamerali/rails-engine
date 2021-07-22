@@ -19,4 +19,19 @@ class Api::V1::RevenueController < ApplicationController
       render json: { error: 'Bad Request' }, status: :bad_request
     end
   end
+
+  def all_revenue_in_date_range
+    start_date = DateTime.parse(params[:start])
+    end_date = DateTime.parse(params[:end]) + 1
+    # binding.pry
+
+    revenue = Merchant
+            .joins(invoices: %i[transactions invoice_items])
+            .where(transactions: { result: 'success' })
+            .where(invoices: { status: 'shipped' })
+            .where("invoices.created_at >= ? AND invoices.created_at <= ?", start_date, end_date)
+            .sum('invoice_items.unit_price * invoice_items.quantity')
+
+    render json: RevenueSerializer.all_revenue_over_range(revenue)
+  end
 end

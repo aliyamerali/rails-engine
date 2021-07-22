@@ -138,7 +138,7 @@ RSpec.describe 'Revenue API endpoints' do
 
       start_date = '2021-06-01'
       end_date = '2021-06-30'
-      get "/api/v1/revenue?start_date=#{start_date}&end_date=#{end_date}"
+      get "/api/v1/revenue?start=#{start_date}&end=#{end_date}"
 
       attributes = JSON.parse(response.body, symbolize_names: true)[:data][:attributes]
 
