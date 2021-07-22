@@ -183,4 +183,59 @@ RSpec.describe 'Merchants API' do
       expect(response.status).to eq(400)
     end
   end
+
+  describe 'merchants with most sold items' do
+    it 'returns x number of merchants ranked by total items sold' do
+      customer = create(:customer)
+      merchant1 = create(:merchant, name: "Merchant1") # 55
+      merchant2 = create(:merchant, name: "Merchant2") # 50
+      merchant3 = create(:merchant, name: "Merchant3") # 100
+      merchant4 = create(:merchant, name: "Merchant4") # 0
+
+      item1a = create(:item, merchant_id: merchant1.id)
+      item1b = create(:item, merchant_id: merchant1.id)
+      item1c = create(:item, merchant_id: merchant1.id)
+      item2a = create(:item, merchant_id: merchant2.id)
+      item2b = create(:item, merchant_id: merchant2.id)
+      item3a = create(:item, merchant_id: merchant3.id)
+
+      invoice1a = Invoice.create!(customer_id: customer.id, merchant_id: merchant1.id, status: "shipped")
+      invoice1b = Invoice.create!(customer_id: customer.id, merchant_id: merchant1.id, status: "shipped")
+      invoice2 = Invoice.create!(customer_id: customer.id, merchant_id: merchant2.id, status: "shipped")
+      invoice3 = Invoice.create!(customer_id: customer.id, merchant_id: merchant3.id, status: "shipped")
+
+      invoice1a.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+      invoice1a.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "failure")
+      invoice1b.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+      invoice2.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+      invoice3.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+
+      InvoiceItem.create!(item_id: item1a.id, invoice_id: invoice1a.id, quantity: 5, unit_price: 5.0)
+      InvoiceItem.create!(item_id: item1b.id, invoice_id: invoice1a.id, quantity: 25, unit_price: 5.0)
+      InvoiceItem.create!(item_id: item1c.id, invoice_id: invoice1b.id, quantity: 25, unit_price: 5.0)
+      InvoiceItem.create!(item_id: item2a.id, invoice_id: invoice2.id, quantity: 20, unit_price: 5.0)
+      InvoiceItem.create!(item_id: item2b.id, invoice_id: invoice2.id, quantity: 30, unit_price: 5.0)
+      InvoiceItem.create!(item_id: item3a.id, invoice_id: invoice3.id, quantity: 100, unit_price: 5.0)
+
+      get '/api/v1/merchants/most_items?quantity=2'
+      merchants = JSON.parse(response.body, symbolize_names: true)[:data]
+
+      expect(response).to be_successful
+      expect(merchants.length).to eq(2)
+
+      expect(merchants.first[:id].to_i).to eq(merchant3.id)
+      expect(merchants.first[:attributes][:count]).to eq(100)
+
+      expect(merchants.second[:id].to_i).to eq(merchant1.id)
+      expect(merchants.second[:attributes][:count]).to eq(55)
+    end
+    
+    it 'defaults to 5 if no quantity given'
+    it 'returns an error if quantity is <= 0' do
+      get "/api/v1/merchants/most_items?quantity=-2"
+
+      expect(response.status).to eq(400)
+    end
+  end
+
 end
