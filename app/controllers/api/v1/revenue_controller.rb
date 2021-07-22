@@ -21,23 +21,10 @@ class Api::V1::RevenueController < ApplicationController
   end
 
   def most_revenue_items
-    if params[:quantity].nil?
-      limit = 10
-    else
-      limit = params[:quantity].to_i
-    end
-
+    limit = item_limit(params[:quantity])
+    
     if limit.positive?
-      # items = Item.most_revenue(limit)
-      items = Item
-              .joins(invoice_items: {invoice: :transactions})
-              .select('items.*, SUM(invoice_items.unit_price * invoice_items.quantity) AS revenue')
-              .where(transactions: { result: 'success' })
-              .where(invoices: { status: 'shipped' })
-              .group(:id)
-              .order('revenue DESC')
-              .limit(limit)
-        # binding.pry
+      items = Item.most_revenue(limit)
       render json: RevenueSerializer.items_revenue(items)
     else
       render json: { error: 'Bad Request' }, status: :bad_request
@@ -57,5 +44,13 @@ class Api::V1::RevenueController < ApplicationController
 
   def valid_date?(date)
     !date.nil? && date != ''
+  end
+
+  def item_limit(passed_param)
+    if passed_param.nil?
+      limit = 10
+    else
+      limit = passed_param.to_i
+    end
   end
 end

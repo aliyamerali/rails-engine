@@ -196,7 +196,6 @@ RSpec.describe 'Revenue API endpoints' do
       invoice2b.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
       invoice2c.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
 
-
       InvoiceItem.create!(item_id: item1.id, invoice_id: invoice1a.id, quantity: 5, unit_price: 5.0) # 25 - DQ
       InvoiceItem.create!(item_id: item2.id, invoice_id: invoice1b.id, quantity: 6, unit_price: 5.0) # 30
       InvoiceItem.create!(item_id: item3.id, invoice_id: invoice1b.id, quantity: 7, unit_price: 5.0) # 35
