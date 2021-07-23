@@ -51,6 +51,11 @@ class Api::V1::RevenueController < ApplicationController
     end
   end
 
+  def weekly_revenue
+    weekly_data = Invoice.revenue_by_week
+    render json: RevenueSerializer.weekly_revenue(weekly_data)
+  end
+
   private
 
   def valid_date?(date)
