@@ -97,7 +97,7 @@ RSpec.describe 'Revenue API endpoints' do
     end
   end
 
-  describe 'revenue across data range' do
+  describe 'revenue across date range' do
     #based on invoice create date
     it 'returns total revenue of all merchants between given dates' do
       customer = create(:customer)
@@ -374,7 +374,54 @@ RSpec.describe 'Revenue API endpoints' do
 
   describe 'weekly revenue' do
     it 'returns the total revenue by week' do
-      
+      customer = create(:customer)
+      merchant1 = create(:merchant)
+      merchant2 = create(:merchant)
+      item1 = create(:item, merchant_id: merchant1.id)
+      item2 = create(:item, merchant_id: merchant2.id)
+
+      invoice1a = Invoice.create!(customer_id: customer.id, merchant_id: merchant1.id, status: "shipped", created_at: "2021-06-30 14:54:09") #W4
+      invoice1b = Invoice.create!(customer_id: customer.id, merchant_id: merchant1.id, status: "shipped", created_at: "2021-07-01 14:54:09") #W4
+      invoice2 = Invoice.create!(customer_id: customer.id, merchant_id: merchant1.id, status: "shipped", created_at: "2021-06-01 14:54:09") #W2
+      invoice3 = Invoice.create!(customer_id: customer.id, merchant_id: merchant2.id, status: "shipped", created_at: "2021-05-07 14:54:09")  #W1
+      invoice4a = Invoice.create!(customer_id: customer.id, merchant_id: merchant2.id, status: "shipped", created_at: "2021-06-02 14:54:09") #w2
+      invoice4b = Invoice.create!(customer_id: customer.id, merchant_id: merchant2.id, status: "shipped", created_at: "2021-06-07 14:54:09") #W3
+
+      invoice1a.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+      invoice1a.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "failure")
+      invoice1b.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+      invoice2.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+      invoice3.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+      invoice4a.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+      invoice4b.transactions.create!(credit_card_number: "92839", credit_card_expiration_date: "", result: "success")
+
+      InvoiceItem.create!(item_id: item1.id, invoice_id: invoice1a.id, quantity: 8, unit_price: 5.0) # 40
+      InvoiceItem.create!(item_id: item1.id, invoice_id: invoice1a.id, quantity: 10, unit_price: 5.0) # 50
+      InvoiceItem.create!(item_id: item1.id, invoice_id: invoice1b.id, quantity: 10, unit_price: 5.0) # 50
+      InvoiceItem.create!(item_id: item2.id, invoice_id: invoice2.id, quantity: 20, unit_price: 5.0) # 100
+      InvoiceItem.create!(item_id: item1.id, invoice_id: invoice3.id, quantity: 30, unit_price: 5.0) # 150
+      InvoiceItem.create!(item_id: item1.id, invoice_id: invoice4a.id, quantity: 5, unit_price: 5.0) # 25
+      InvoiceItem.create!(item_id: item2.id, invoice_id: invoice4b.id, quantity: 10, unit_price: 25.0) # 250
+
+
+      get "/api/v1/revenue/weekly"
+
+      weekly_revenue = JSON.parse(response.body, symbolize_names: true)[:data]
+
+      expect(response).to be_successful
+      expect(weekly_revenue.length).to eq(4)
+
+      expect(weekly_revenue.first[:attributes][:week]).to eq("2021-05-03")
+      expect(weekly_revenue.first[:attributes][:revenue]).to eq(150)
+
+      expect(weekly_revenue.second[:attributes][:week]).to eq("2021-05-31")
+      expect(weekly_revenue.second[:attributes][:revenue]).to eq(125)
+
+      expect(weekly_revenue.third[:attributes][:week]).to eq("2021-06-07")
+      expect(weekly_revenue.third[:attributes][:revenue]).to eq(250)
+
+      expect(weekly_revenue.fourth[:attributes][:week]).to eq("2021-06-28")
+      expect(weekly_revenue.fourth[:attributes][:revenue]).to eq(140)
     end
   end
 end

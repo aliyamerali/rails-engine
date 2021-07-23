@@ -52,13 +52,7 @@ class Api::V1::RevenueController < ApplicationController
   end
 
   def weekly_revenue
-    weekly_data = Invoice.joins(:transactions, :invoice_items)
-      .select("DATE_TRUNC('week', invoices.created_at) as week, SUM(invoice_items.unit_price * invoice_items.quantity) as revenue")
-      .where(transactions: { result: 'success' })
-      .where(invoices: { status: 'shipped' })
-      .group("DATE_TRUNC('week', invoices.created_at)")
-      .order("DATE_TRUNC('week', invoices.created_at)")
-
+    weekly_data = Invoice.revenue_by_week
     render json: RevenueSerializer.weekly_revenue(weekly_data)
   end
 

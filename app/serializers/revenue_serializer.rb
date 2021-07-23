@@ -55,11 +55,11 @@ class RevenueSerializer
 
   def self.weekly_revenue(weekly_data)
     { data: weekly_data.map do |week_data|
-        { "id": nil,
-          "type": 'weekly_revenue',
-          "attributes":
-           { "week": week_data.week.to_date,
-             "revenue": week_data.revenue } }
-      end }
+      { "id": nil,
+        "type": 'weekly_revenue',
+        "attributes":
+         { "week": week_data.week.to_date,
+           "revenue": week_data.revenue } }
+    end }
   end
 end
