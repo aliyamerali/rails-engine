@@ -40,6 +40,17 @@ class Api::V1::RevenueController < ApplicationController
     end
   end
 
+  def invoices_unshipped_potential
+    limit = params[:quantity].to_i
+
+    if limit.positive?
+      invoices = Invoice.unshipped_potential_revenue(limit)
+      render json: UnshippedOrderSerializer.new(invoices)
+    else
+      render json: { error: 'Bad Request' }, status: :bad_request
+    end
+  end
+
   private
 
   def valid_date?(date)

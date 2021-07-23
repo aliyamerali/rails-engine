@@ -10,6 +10,7 @@ Rails.application.routes.draw do
       get '/revenue/merchants/:id', to: 'revenue#merchant_total_revenue'
       get '/revenue/merchants', to: 'revenue#most_revenue_merchants'
       get '/revenue/items', to: 'revenue#most_revenue_items'
+      get '/revenue/unshipped', to: 'revenue#invoices_unshipped_potential'
       get '/revenue', to: 'revenue#all_revenue_in_date_range'
       # RESTFUL ROUTES
       resources :merchants, only: [:index, :show] do

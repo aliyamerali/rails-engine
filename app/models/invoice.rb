@@ -16,4 +16,14 @@ class Invoice < ApplicationRecord
       .where(created_at: start_datetime..end_datetime)
       .sum('invoice_items.unit_price * invoice_items.quantity')
   end
+
+  def self.unshipped_potential_revenue(limit)
+    joins(:transactions, :invoice_items)
+      .select('invoices.id, SUM(invoice_items.unit_price * invoice_items.quantity) AS potential_revenue')
+      .where(transactions: { result: 'success' })
+      .where(invoices: { status: 'packaged' })
+      .group(:id)
+      .order('potential_revenue DESC')
+      .limit(limit)
+  end
 end

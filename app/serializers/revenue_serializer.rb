@@ -43,4 +43,13 @@ class RevenueSerializer
            { "revenue": revenue } }
     }
   end
+
+  # def self.potential_revenue(invoices)
+  #   { data: invoices.map do |invoice|
+  #     { "id": invoice.id.to_s,
+  #       "type": 'unshipped_order',
+  #       "attributes":
+  #        { "potential_revenue": invoice.potential_revenue } }
+  #   end }
+  # end
 end
