@@ -35,14 +35,7 @@ class Api::V1::MerchantsController < ApplicationController
     limit = params[:quantity].to_i
 
     if limit.positive?
-      merchants = Merchant.joins(invoices: %i[transactions invoice_items])
-                          .select('merchants.*, SUM(invoice_items.quantity) AS count')
-                          .where(transactions: { result: 'success' })
-                          .where(invoices: { status: 'shipped' })
-                          .group(:id)
-                          .order('count DESC')
-                          .limit(limit)
-
+      merchants = Merchant.most_items(limit)
       render json: ItemsSoldSerializer.new(merchants)
     else
       render json: { error: 'Bad Request' }, status: :bad_request
