@@ -41,5 +41,4 @@ class Api::V1::MerchantsController < ApplicationController
       render json: { error: 'Bad Request' }, status: :bad_request
     end
   end
-
 end
