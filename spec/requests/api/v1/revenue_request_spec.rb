@@ -371,4 +371,10 @@ RSpec.describe 'Revenue API endpoints' do
       expect(response.status).to eq(400)
     end
   end
+
+  describe 'weekly revenue' do
+    it 'returns the total revenue by week' do
+      
+    end
+  end
 end

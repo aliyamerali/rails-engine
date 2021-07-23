@@ -11,6 +11,7 @@ Rails.application.routes.draw do
       get '/revenue/merchants', to: 'revenue#most_revenue_merchants'
       get '/revenue/items', to: 'revenue#most_revenue_items'
       get '/revenue/unshipped', to: 'revenue#invoices_unshipped_potential'
+      get '/revenue/weekly', to: 'revenue#weekly_revenue'
       get '/revenue', to: 'revenue#all_revenue_in_date_range'
       # RESTFUL ROUTES
       resources :merchants, only: [:index, :show] do
