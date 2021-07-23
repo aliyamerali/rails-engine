@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       # NON RESTFUL ROUTES
       get '/merchants/find', to: 'merchants#find'
+      get '/merchants/most_items', to: 'merchants#most_items_sold'
       get '/items/find_all', to: 'items#find_all'
       get '/revenue/merchants/:id', to: 'revenue#merchant_total_revenue'
       get '/revenue/merchants', to: 'revenue#most_revenue_merchants'

@@ -229,8 +229,11 @@ RSpec.describe 'Merchants API' do
       expect(merchants.second[:id].to_i).to eq(merchant1.id)
       expect(merchants.second[:attributes][:count]).to eq(55)
     end
-    
-    it 'defaults to 5 if no quantity given'
+
+    # it 'defaults to 5 if no quantity given' 
+    # skipping this test as postman
+    # requires error if no quantity given, not default.
+
     it 'returns an error if quantity is <= 0' do
       get "/api/v1/merchants/most_items?quantity=-2"
 
