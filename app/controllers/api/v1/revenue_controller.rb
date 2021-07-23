@@ -44,15 +44,7 @@ class Api::V1::RevenueController < ApplicationController
     limit = params[:quantity].to_i
 
     if limit.positive?
-      invoices = Invoice
-                .joins(:transactions, :invoice_items)
-                .select('invoices.id, SUM(invoice_items.unit_price * invoice_items.quantity) AS potential_revenue')
-                .where(transactions: { result: 'success' })
-                .where(invoices: { status: 'packaged' })
-                .group(:id)
-                .order('potential_revenue DESC')
-                .limit(limit)
-
+      invoices = Invoice.unshipped_potential_revenue(limit)
       render json: RevenueSerializer.potential_revenue(invoices)
     else
       render json: { error: 'Bad Request' }, status: :bad_request
