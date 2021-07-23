@@ -30,4 +30,15 @@ class Api::V1::MerchantsController < ApplicationController
       render json: { response: 'Bad Request' }, status: :bad_request
     end
   end
+
+  def most_items_sold
+    limit = params[:quantity].to_i
+
+    if limit.positive?
+      merchants = Merchant.most_items(limit)
+      render json: ItemsSoldSerializer.new(merchants)
+    else
+      render json: { error: 'Bad Request' }, status: :bad_request
+    end
+  end
 end
