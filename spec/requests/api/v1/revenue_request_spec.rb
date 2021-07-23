@@ -339,12 +339,12 @@ RSpec.describe 'Revenue API endpoints' do
       InvoiceItem.create!(item_id: item3.id, invoice_id: invoice1b.id, quantity: 8, unit_price: 5.0) # 40
       InvoiceItem.create!(item_id: item1.id, invoice_id: invoice1c.id, quantity: 30, unit_price: 5.0) # 150 - DQ
       InvoiceItem.create!(item_id: item2.id, invoice_id: invoice2a.id, quantity: 5, unit_price: 5.0) # 25
-      InvoiceItem.create!(item_id: item1.id, invoice_id: invoice2b.id, quantity: 10, unit_price: 25.0) # 250 - DQ
-      InvoiceItem.create!(item_id: item2.id, invoice_id: invoice2b.id, quantity: 3, unit_price: 25.0) # 75 - DQ
+      InvoiceItem.create!(item_id: item1.id, invoice_id: invoice2b.id, quantity: 10, unit_price: 25.0) # 250
+      InvoiceItem.create!(item_id: item2.id, invoice_id: invoice2b.id, quantity: 3, unit_price: 25.0) # 75
       InvoiceItem.create!(item_id: item2.id, invoice_id: invoice2c.id, quantity: 6, unit_price: 25.0) # 150
       InvoiceItem.create!(item_id: item3.id, invoice_id: invoice2c.id, quantity: 10, unit_price: 25.0) # 250
 
-      get "/api/v1/revenue/unshipped?quantity=2"
+      get "/api/v1/revenue/unshipped?quantity=3"
       invoices = JSON.parse(response.body, symbolize_names: true)[:data]
 
       expect(response).to be_successful
@@ -352,8 +352,11 @@ RSpec.describe 'Revenue API endpoints' do
       expect(invoices.first[:id].to_i).to eq(invoice2c.id)
       expect(invoices.first[:attributes][:potential_revenue]).to eq(400.0)
 
-      expect(invoices.second[:id].to_i).to eq(invoice1b.id)
-      expect(invoices.second[:attributes][:potential_revenue]).to eq(105.0)
+      expect(invoices.second[:id].to_i).to eq(invoice2b.id)
+      expect(invoices.second[:attributes][:potential_revenue]).to eq(325.0)
+
+      expect(invoices.third[:id].to_i).to eq(invoice1b.id)
+      expect(invoices.third[:attributes][:potential_revenue]).to eq(105.0)
     end
 
     it 'returns an error if quantity is left blank' do
